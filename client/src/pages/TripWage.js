@@ -10,7 +10,16 @@ const LONG_TRIP_THRESHOLD_KM = 10;
 const LONG_TRIP_EXTRA_FUEL = 3.5;
 
 const TripWage = () => {
-  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+  // 获取本地日期（避免 UTC 时区问题）
+  const getLocalDateString = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  const [currentDate, setCurrentDate] = useState(getLocalDateString());
   const [orders, setOrders] = useState([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');

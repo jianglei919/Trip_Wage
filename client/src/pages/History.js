@@ -30,7 +30,16 @@ ChartJS.register(
 );
 
 const History = () => {
-  const today = new Date().toISOString().split('T')[0];
+  // 获取本地日期（避免 UTC 时区问题）
+  const getLocalDateString = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  const today = getLocalDateString();
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
   const [stats, setStats] = useState([]);
@@ -43,8 +52,15 @@ const History = () => {
     const start = new Date();
     start.setDate(start.getDate() - days);
     
-    setEndDate(end.toISOString().split('T')[0]);
-    setStartDate(start.toISOString().split('T')[0]);
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    setEndDate(formatDate(end));
+    setStartDate(formatDate(start));
   };
 
   // 加载历史数据
