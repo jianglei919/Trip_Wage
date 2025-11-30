@@ -332,7 +332,7 @@ const TripWage = () => {
   const keyMetrics = [
     {
       label: 'Total Tips',
-      value: `¥${summary.totalTips.toFixed(2)}`,
+      value: `$${summary.totalTips.toFixed(2)}`,
       icon: '💵',
       className: 'metric-tips'
     },
@@ -350,7 +350,7 @@ const TripWage = () => {
     },
     {
       label: 'Hourly Rate',
-      value: `¥${summary.hourlyWage.toFixed(2)}/h`,
+      value: `$${summary.hourlyWage.toFixed(2)}/h`,
       icon: '⏱️',
       className: 'metric-hourly'
     }
@@ -413,8 +413,8 @@ const TripWage = () => {
               <div className="metric-icon">💰</div>
               <div className="metric-info">
                 <div className="metric-label">Total Income</div>
-                <div className="metric-value">¥{summary.totalWage.toFixed(2)}</div>
-                <div className="metric-sub">Base+Fuel ¥{baseAndFuel.toFixed(2)} + Tips ¥{summary.totalTips.toFixed(2)}</div>
+                <div className="metric-value">${summary.totalWage.toFixed(2)}</div>
+                <div className="metric-sub">Base+Fuel ${baseAndFuel.toFixed(2)} + Tips ${summary.totalTips.toFixed(2)}</div>
               </div>
             </div>
           </div>

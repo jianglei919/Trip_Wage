@@ -73,7 +73,6 @@ const History = () => {
     totalTips: acc.totalTips + day.totalTips,
     totalFuel: acc.totalFuel + day.fuelFeeTotal,
     totalWorkHours: acc.totalWorkHours + day.workHours,
-    totalWage: acc.totalWage + day.totalWage,
     totalBasePayment: acc.totalBasePayment + day.basePayment
   }), {
     totalDays: 0,
@@ -83,9 +82,11 @@ const History = () => {
     totalTips: 0,
     totalFuel: 0,
     totalWorkHours: 0,
-    totalWage: 0,
     totalBasePayment: 0
   });
+
+  // 正确计算 Total Wage: totalTips + totalFuel + totalWorkHours * 8.5
+  summary.totalWage = summary.totalTips + summary.totalFuel + (summary.totalWorkHours * 8.5);
 
   // 准备图表数据
   const chartData = {
@@ -138,7 +139,7 @@ const History = () => {
         position: 'left',
         title: {
           display: true,
-          text: 'Amount (¥)'
+          text: 'Amount ($)'
         }
       },
       y1: {
@@ -198,7 +199,7 @@ const History = () => {
         stacked: true,
         title: {
           display: true,
-          text: 'Amount (¥)'
+          text: 'Amount ($)'
         }
       }
     }
@@ -367,11 +368,11 @@ const History = () => {
             </div>
             <div className="summary-card">
               <div className="card-label">Total Tips</div>
-              <div className="card-value tips">¥{summary.totalTips.toFixed(2)}</div>
+              <div className="card-value tips">${summary.totalTips.toFixed(2)}</div>
             </div>
-            <div className="summary-card">
+            <div className="summary-card fuel">
               <div className="card-label">Total Fuel Cost</div>
-              <div className="card-value fuel">¥{summary.totalFuel.toFixed(2)}</div>
+              <div className="card-value fuel">${summary.totalFuel.toFixed(2)}</div>
             </div>
           </div>
 
@@ -417,10 +418,10 @@ const History = () => {
                       <td>{day.actualTrips}</td>
                       <td>{day.effectiveTrips}</td>
                       <td>{day.totalDistance.toFixed(1)}</td>
-                      <td className="tips-cell">¥{day.totalTips.toFixed(2)}</td>
-                      <td className="fuel-cell">¥{day.fuelFeeTotal.toFixed(2)}</td>
-                      <td>{day.workHours.toFixed(2)}h</td>
-                      <td>¥{day.basePayment.toFixed(2)}</td>
+                      <td className="tips-cell">${day.totalTips.toFixed(2)}</td>
+                      <td className="fuel-cell">${day.fuelFeeTotal.toFixed(2)}</td>
+                      <td>{day.workHours.toFixed(1)}</td>
+                      <td>${day.basePayment.toFixed(2)}</td>
                       <td className="wage-cell">¥{day.totalWage.toFixed(2)}</td>
                       <td>¥{day.hourlyWage.toFixed(2)}</td>
                     </tr>
