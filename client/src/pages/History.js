@@ -86,6 +86,7 @@ const History = () => {
     totalDays: acc.totalDays + (day.actualTrips > 0 ? 1 : 0),
     totalTrips: acc.totalTrips + day.actualTrips,
     totalEffectiveTrips: acc.totalEffectiveTrips + day.effectiveTrips,
+    totalLongTrips: acc.totalLongTrips + (day.longTripsCount || 0),
     totalDistance: acc.totalDistance + day.totalDistance,
     totalTips: acc.totalTips + day.totalTips,
     totalFuel: acc.totalFuel + day.fuelFeeTotal,
@@ -95,6 +96,7 @@ const History = () => {
     totalDays: 0,
     totalTrips: 0,
     totalEffectiveTrips: 0,
+    totalLongTrips: 0,
     totalDistance: 0,
     totalTips: 0,
     totalFuel: 0,
@@ -102,8 +104,8 @@ const History = () => {
     totalBasePayment: 0
   });
 
-  // 正确计算 Total Wage: totalTips + totalFuel + totalWorkHours * 8.5
-  summary.totalWage = summary.totalTips + summary.totalFuel + (summary.totalWorkHours * 8.5);
+  // 正确计算 Total Wage: totalTips + totalFuel + totalWorkHours * 8.5 + longTrips * 3.5
+  summary.totalWage = summary.totalTips + summary.totalFuel + (summary.totalWorkHours * 8.5) + (summary.totalLongTrips * 3.5);
 
   // 准备图表数据
   const chartData = {
@@ -269,10 +271,11 @@ const History = () => {
     }
 
     const wsData = [
-      ['Date', 'Actual Orders', 'Effective Orders', 'Total Distance', 'Tips', 'Fuel Cost', 'Work Hours', 'Base Pay', 'Total Wage', 'Hourly Rate'],
+      ['Date', 'Actual Orders', 'Long Trips', 'Effective Orders', 'Total Distance', 'Tips', 'Fuel Cost', 'Work Hours', 'Base Pay', 'Total Wage', 'Hourly Rate'],
       ...stats.map(s => [
         s.date,
         s.actualTrips,
+        s.longTripsCount || 0,
         s.effectiveTrips,
         s.totalDistance.toFixed(1),
         s.totalTips.toFixed(2),
@@ -286,6 +289,7 @@ const History = () => {
       ['Summary Statistics'],
       ['Working Days', summary.totalDays],
       ['Total Orders', summary.totalTrips],
+      ['Total Long Trips', summary.totalLongTrips],
       ['Total Effective Orders', summary.totalEffectiveTrips],
       ['Total Distance', summary.totalDistance.toFixed(1)],
       ['Total Tips', summary.totalTips.toFixed(2)],
@@ -363,7 +367,9 @@ const History = () => {
             </div>
             <div className="summary-card">
               <div className="card-label">Total Orders</div>
-              <div className="card-value">{summary.totalTrips} orders</div>
+              <div className="card-value">
+                {summary.totalTrips}{summary.totalLongTrips > 0 ? `+${summary.totalLongTrips}` : ''} orders
+              </div>
             </div>
             <div className="summary-card">
               <div className="card-label">Total Work Hours</div>
@@ -418,6 +424,7 @@ const History = () => {
                   <tr>
                     <th>Date</th>
                     <th>Actual Orders</th>
+                    <th>Long Trips</th>
                     <th>Effective Orders</th>
                     <th>Total Distance</th>
                     <th>Tips</th>
@@ -432,7 +439,8 @@ const History = () => {
                   {stats.map((day) => (
                     <tr key={day.date} className={day.actualTrips === 0 ? 'no-work-day' : ''}>
                       <td>{day.date}</td>
-                      <td>{day.actualTrips}</td>
+                      <td>{day.actualTrips}{day.longTripsCount > 0 ? `+${day.longTripsCount}` : ''}</td>
+                      <td>{day.longTripsCount || 0}</td>
                       <td>{day.effectiveTrips}</td>
                       <td>{day.totalDistance.toFixed(1)}</td>
                       <td className="tips-cell">${day.totalTips.toFixed(2)}</td>

@@ -214,6 +214,7 @@ export const getHistoricalStats = async (req, res) => {
           orders: [],
           actualTrips: 0,
           effectiveTrips: 0,
+          longTripsCount: 0,
           totalDistance: 0,
           totalTips: 0,
           fuelFeeTotal: 0,
@@ -231,6 +232,7 @@ export const getHistoricalStats = async (req, res) => {
       // Calculate effective trips
       if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
         dailyStats[date].effectiveTrips += 2;
+        dailyStats[date].longTripsCount += 1;
       } else {
         dailyStats[date].effectiveTrips += 1;
       }
@@ -283,6 +285,7 @@ export const getHistoricalStats = async (req, res) => {
         date,
         actualTrips: 0,
         effectiveTrips: 0,
+        longTripsCount: 0,
         totalDistance: 0,
         totalTips: 0,
         fuelFeeTotal: 0,
