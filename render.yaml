@@ -1,0 +1,45 @@
+services:
+  # Backend API Service
+  - type: web
+    name: trip-wage-api
+    runtime: node
+    region: oregon
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_TYPE
+        value: mongodb
+      - key: DB_DUAL_WRITE
+        value: false
+      - key: READ_PRIMARY
+        value: mongodb
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URL
+        sync: false  # 需要在Render控制面板手动设置
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://trip-wage.onrender.com  # 更新为你的前端域名
+
+  # Frontend Static Site
+  - type: web
+    name: trip-wage-frontend
+    runtime: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://trip-wage-api.onrender.com/api  # 更新为你的后端域名
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

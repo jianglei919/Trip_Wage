@@ -1,0 +1,18 @@
+node_modules/
+.DS_Store
+npm-debug.log
+yarn-error.log
+dist/
+build/
+coverage/
+*.log
+
+# Environment files with sensitive data
+.env
+.env.local
+serviceAccountKey.json
+
+# Keep example files
+!.env.example
+!.env.development
+!.env.production

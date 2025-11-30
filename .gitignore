@@ -1,0 +1,17 @@
+.DS_Store
+node_modules/
+.env
+.env.local
+.env.development
+.env.production
+*.log
+dist/
+build/
+coverage/
+
+# Firebase credentials
+server/serviceAccountKey.json
+
+# IDE
+.vscode/
+.idea/
