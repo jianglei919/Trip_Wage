@@ -30,8 +30,9 @@ ChartJS.register(
 );
 
 const History = () => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState('chart'); // 'chart' or 'table'
