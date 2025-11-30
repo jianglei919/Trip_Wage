@@ -104,8 +104,11 @@ const History = () => {
     totalBasePayment: 0
   });
 
-  // 正确计算 Total Wage: totalTips + totalFuel + totalWorkHours * 8.5 + longTrips * 3.5
-  summary.totalWage = summary.totalTips + summary.totalFuel + (summary.totalWorkHours * 8.5) + (summary.totalLongTrips * 3.5);
+  // 正确计算 Total Wage: totalTips + totalFuel + totalBasePayment
+  summary.totalWage = summary.totalTips + summary.totalFuel + summary.totalBasePayment;
+  
+  // 计算 Base + Fuel
+  summary.basePlusFuel = summary.totalBasePayment + summary.totalFuel;
 
   // 准备图表数据
   const chartData = {
@@ -367,9 +370,7 @@ const History = () => {
             </div>
             <div className="summary-card">
               <div className="card-label">Total Orders</div>
-              <div className="card-value">
-                {summary.totalTrips}{summary.totalLongTrips > 0 ? `+${summary.totalLongTrips}` : ''} orders
-              </div>
+              <div className="card-value">{summary.totalTrips}+{summary.totalLongTrips} orders</div>
             </div>
             <div className="summary-card">
               <div className="card-label">Total Work Hours</div>
@@ -381,21 +382,29 @@ const History = () => {
             </div>
             <div className="summary-card highlight">
               <div className="card-label">Total Wage</div>
-              <div className="card-value">¥{summary.totalWage.toFixed(2)}</div>
+              <div className="card-value">${summary.totalWage.toFixed(2)}</div>
             </div>
             <div className="summary-card">
               <div className="card-label">Avg Hourly Rate</div>
               <div className="card-value">
-                ¥{summary.totalWorkHours > 0 ? (summary.totalWage / summary.totalWorkHours).toFixed(2) : '0.00'}
+                ${summary.totalWorkHours > 0 ? (summary.totalWage / summary.totalWorkHours).toFixed(2) : '0.00'}
               </div>
             </div>
             <div className="summary-card">
               <div className="card-label">Total Tips</div>
               <div className="card-value tips">${summary.totalTips.toFixed(2)}</div>
             </div>
+            <div className="summary-card">
+              <div className="card-label">Total Base Income</div>
+              <div className="card-value">${summary.totalBasePayment.toFixed(2)}</div>
+            </div>
             <div className="summary-card fuel">
               <div className="card-label">Total Fuel Cost</div>
               <div className="card-value fuel">${summary.totalFuel.toFixed(2)}</div>
+            </div>
+            <div className="summary-card">
+              <div className="card-label">Base + Fuel</div>
+              <div className="card-value">${summary.basePlusFuel.toFixed(2)}</div>
             </div>
           </div>
 
