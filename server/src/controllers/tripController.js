@@ -230,7 +230,7 @@ export const getHistoricalStats = async (req, res) => {
       const LONG_TRIP_EXTRA_FUEL = 3.5;
       
       // Calculate effective trips
-      if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
+      if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
         dailyStats[date].effectiveTrips += 2;
         dailyStats[date].longTripsCount += 1;
       } else {
@@ -257,7 +257,7 @@ export const getHistoricalStats = async (req, res) => {
       
       // Calculate fuel fee
       let fuelFee = FUEL_PER_ORDER;
-      if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
+      if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
         fuelFee += LONG_TRIP_EXTRA_FUEL;
       }
       dailyStats[date].fuelFeeTotal += fuelFee;

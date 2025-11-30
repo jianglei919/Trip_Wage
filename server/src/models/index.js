@@ -304,7 +304,7 @@ class OrderAdapter {
         const tipsTotal = channelTip + order.extraCashTip;
         
         let fuelFee = FUEL_PER_ORDER;
-        if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
+        if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
           fuelFee += LONG_TRIP_EXTRA_FUEL;
           effectiveTrips += 2;
         } else {
@@ -805,7 +805,7 @@ class DualOrder {
         const channelTip = Math.max(0, order.paymentAmount - order.orderValue - order.changeReturned);
         const tipsTotal = channelTip + order.extraCashTip;
         let fuelFee = FUEL_PER_ORDER;
-        if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
+        if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
           fuelFee += LONG_TRIP_EXTRA_FUEL;
           effectiveTrips += 2;
         } else {

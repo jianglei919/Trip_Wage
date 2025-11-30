@@ -127,7 +127,7 @@ export class Order {
       const tipsTotal = channelTip + order.extraCashTip;
       
       let fuelFee = FUEL_PER_ORDER;
-      if (order.distanceKm > LONG_TRIP_THRESHOLD_KM) {
+      if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
         fuelFee += LONG_TRIP_EXTRA_FUEL;
         effectiveTrips += 2;
       } else {
