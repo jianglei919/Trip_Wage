@@ -364,6 +364,7 @@ const History = () => {
       {stats.length > 0 && (
         <>
           <div className="summary-cards">
+            {/* Work Stats */}
             <div className="summary-card">
               <div className="card-label">Working Days</div>
               <div className="card-value">{summary.totalDays} days</div>
@@ -380,6 +381,28 @@ const History = () => {
               <div className="card-label">Total Distance</div>
               <div className="card-value">{summary.totalDistance.toFixed(1)} km</div>
             </div>
+            
+            {/* Income Components (Green) */}
+            <div className="summary-card income-base">
+              <div className="card-label">Total Base Income</div>
+              <div className="card-value">${summary.totalBasePayment.toFixed(2)}</div>
+            </div>
+            <div className="summary-card income-fuel">
+              <div className="card-label">Total Fuel Subsidy</div>
+              <div className="card-value">${Math.abs(summary.totalFuel).toFixed(2)}</div>
+            </div>
+            <div className="summary-card income-tips">
+              <div className="card-label">Total Tips</div>
+              <div className="card-value">${summary.totalTips.toFixed(2)}</div>
+            </div>
+            
+            {/* Paycheck from Restaurant (Blue) */}
+            <div className="summary-card paycheck">
+              <div className="card-label">Base + Fuel (Bi-weekly Pay)</div>
+              <div className="card-value">${(summary.totalBasePayment + Math.abs(summary.totalFuel)).toFixed(2)}</div>
+            </div>
+            
+            {/* Total Earnings (Highlighted) */}
             <div className="summary-card highlight">
               <div className="card-label">Total Wage</div>
               <div className="card-value">${summary.totalWage.toFixed(2)}</div>
@@ -390,31 +413,10 @@ const History = () => {
                 ${summary.totalWorkHours > 0 ? (summary.totalWage / summary.totalWorkHours).toFixed(2) : '0.00'}
               </div>
             </div>
-            <div className="summary-card">
-              <div className="card-label">Total Tips</div>
-              <div className="card-value tips">${summary.totalTips.toFixed(2)}</div>
-            </div>
-            <div className="summary-card">
-              <div className="card-label">Total Base Income</div>
-              <div className="card-value">${summary.totalBasePayment.toFixed(2)}</div>
-            </div>
-            <div className="summary-card fuel">
-              <div className="card-label">Total Fuel Cost</div>
-              <div className="card-value fuel">${summary.totalFuel.toFixed(2)}</div>
-            </div>
-            <div className="summary-card">
-              <div className="card-label">Base + Fuel</div>
-              <div className="card-value">${summary.basePlusFuel.toFixed(2)}</div>
-            </div>
           </div>
 
           {viewMode === 'chart' ? (
             <div className="charts-grid">
-              <div className="chart-box">
-                <div style={{ height: '350px' }}>
-                  <Line data={chartData} options={chartOptions} />
-                </div>
-              </div>
               <div className="chart-box">
                 <div style={{ height: '350px' }}>
                   <Bar data={barChartData} options={barChartOptions} />

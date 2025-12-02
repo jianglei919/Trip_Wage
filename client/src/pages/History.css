@@ -147,6 +147,63 @@
   color: white;
 }
 
+/* Income Components - Green tones */
+.summary-card.income-base {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  color: white;
+}
+
+.summary-card.income-base .card-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.summary-card.income-base .card-value {
+  color: white;
+}
+
+.summary-card.income-fuel {
+  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+  color: white;
+}
+
+.summary-card.income-fuel .card-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.summary-card.income-fuel .card-value {
+  color: white;
+}
+
+.summary-card.income-tips {
+  background: linear-gradient(135deg, #ff9800 0%, #ffa726 100%);
+  color: white;
+}
+
+.summary-card.income-tips .card-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.summary-card.income-tips .card-value {
+  color: white;
+}
+
+/* Restaurant Paycheck - Blue tone */
+.summary-card.paycheck {
+  background: linear-gradient(135deg, #2196f3 0%, #42a5f5 100%);
+  color: white;
+  border: 2px solid #1976d2;
+}
+
+.summary-card.paycheck .card-label {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+.summary-card.paycheck .card-value {
+  color: white;
+  font-size: 26px;
+}
+
 .card-label {
   font-size: 13px;
   color: #666;
