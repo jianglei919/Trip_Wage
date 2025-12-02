@@ -23,6 +23,7 @@ const Navbar = () => {
           <ul className="navbar-links">
             <li><Link to="/tripwage">{t('navbar.tripWage')}</Link></li>
             <li><Link to="/history">{t('navbar.history')}</Link></li>
+            <li><Link to="/profile">{t('navbar.profile')}</Link></li>
             <li>
               <button onClick={toggleLanguage} className="lang-switch-btn">
                 {i18n.language === 'zh' ? '🌐 EN' : '🌐 中文'}

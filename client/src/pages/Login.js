@@ -66,6 +66,9 @@ const Login = () => {
         <div className="auth-link">
           {t('login.noAccount')} <Link to="/register">{t('login.registerLink')}</Link>
         </div>
+        <div className="auth-link">
+          <Link to="/forgot-password">{t('forgotPassword.title')}</Link>
+        </div>
       </div>
     </div>
   );

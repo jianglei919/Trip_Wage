@@ -75,3 +75,95 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Update user profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if email or username is already taken by another user
+    if (email !== user.email || username !== user.username) {
+      const existingUser = await User.findByEmailOrUsername(email, username);
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(400).json({ error: 'Email or username already in use' });
+      }
+    }
+
+    // Update user fields
+    user.username = username || user.username;
+    user.email = email || user.email;
+    
+    await user.save();
+    
+    res.json({
+      message: 'Profile updated successfully',
+      user: user.toJSON()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Change password
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
+    }
+
+    // Validate new password
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: 'New password must be at least 6 characters' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Forgot password
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findByEmail(email);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // TODO: In a real application, you would:
+    // 1. Generate a password reset token
+    // 2. Save it to the database with expiration
+    // 3. Send an email with reset link
+    // For now, we'll just return a success message
+    
+    res.json({ 
+      message: 'Password reset instructions have been sent to your email',
+      // In development, we can return a mock token
+      ...(process.env.NODE_ENV === 'development' && { 
+        info: 'This is a mock response. Email functionality not implemented yet.' 
+      })
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

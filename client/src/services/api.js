@@ -42,7 +42,12 @@ export const orderService = {
   getDailyStats: (date) => api.get(`/orders/stats/${date}`),
   saveWorkTime: (data) => api.post('/orders/worktime', data),
   getWorkTime: (date) => api.get(`/orders/worktime/${date}`),
-  getHistoricalStats: (startDate, endDate) => api.get(`/orders/historical-stats?startDate=${startDate}&endDate=${endDate}`)
+  getHistoricalStats: (startDate, endDate) => api.get(`/orders/historical-stats?startDate=${startDate}&endDate=${endDate}`),
+  
+  // Profile & Password management
+  updateProfile: (profileData) => api.put('/users/profile', profileData),
+  changePassword: (passwordData) => api.put('/users/change-password', passwordData),
+  forgotPassword: (emailData) => api.post('/users/forgot-password', emailData)
 };
 
 export default api;

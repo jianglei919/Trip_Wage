@@ -2,6 +2,7 @@
   "navbar": {
     "tripWage": "配送工资",
     "history": "历史记录",
+    "profile": "个人中心",
     "logout": "退出登录",
     "login": "登录",
     "register": "注册"
@@ -119,5 +120,40 @@
     "loginLink": "登录",
     "passwordMismatch": "密码不匹配",
     "registerFailed": "注册失败"
+  },
+  "profile": {
+    "title": "个人中心",
+    "accountInfo": "账户信息",
+    "username": "用户名",
+    "email": "邮箱",
+    "editProfile": "编辑资料",
+    "changePassword": "修改密码",
+    "saveChanges": "保存修改",
+    "cancel": "取消",
+    "updateSuccess": "资料更新成功",
+    "updateFailed": "资料更新失败"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "changeButton": "修改密码",
+    "backToProfile": "返回个人中心",
+    "passwordMismatch": "新密码不匹配",
+    "passwordTooShort": "密码长度至少6位",
+    "changeSuccess": "密码修改成功",
+    "changeFailed": "密码修改失败",
+    "wrongPassword": "当前密码错误"
+  },
+  "forgotPassword": {
+    "title": "忘记密码",
+    "description": "请输入您的邮箱地址，我们将发送密码重置说明到您的邮箱。",
+    "email": "邮箱地址",
+    "sendButton": "发送重置链接",
+    "backToLogin": "返回登录",
+    "emailSent": "密码重置说明已发送到您的邮箱",
+    "emailNotFound": "未找到使用此邮箱的账户",
+    "sendFailed": "发送重置邮件失败"
   }
 }

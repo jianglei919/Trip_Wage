@@ -5,8 +5,11 @@ import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import TripWage from './pages/TripWage';
 import History from './pages/History';
+import Profile from './pages/Profile';
+import ChangePassword from './pages/ChangePassword';
 import './i18n/config';
 import './App.css';
 
@@ -19,6 +22,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route
               path="/tripwage"
               element={
@@ -32,6 +36,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <History />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                <PrivateRoute>
+                  <ChangePassword />
                 </PrivateRoute>
               }
             />

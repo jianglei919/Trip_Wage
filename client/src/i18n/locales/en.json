@@ -2,6 +2,7 @@
   "navbar": {
     "tripWage": "Trip Wage",
     "history": "History",
+    "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
     "register": "Register"
@@ -119,5 +120,40 @@
     "loginLink": "Login",
     "passwordMismatch": "Passwords do not match",
     "registerFailed": "Registration failed"
+  },
+  "profile": {
+    "title": "Profile",
+    "accountInfo": "Account Information",
+    "username": "Username",
+    "email": "Email",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "updateSuccess": "Profile updated successfully",
+    "updateFailed": "Failed to update profile"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "changeButton": "Change Password",
+    "backToProfile": "Back to Profile",
+    "passwordMismatch": "New passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "changeSuccess": "Password changed successfully",
+    "changeFailed": "Failed to change password",
+    "wrongPassword": "Current password is incorrect"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "description": "Enter your email address and we'll send you instructions to reset your password.",
+    "email": "Email Address",
+    "sendButton": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "emailSent": "Password reset instructions have been sent to your email",
+    "emailNotFound": "No account found with this email address",
+    "sendFailed": "Failed to send reset email"
   }
 }
