@@ -154,7 +154,7 @@ button:disabled {
   }
 
   .profile-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .button-group {
@@ -163,5 +163,42 @@ button:disabled {
 
   .button-group button {
     width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 8px;
+  }
+
+  .profile-content {
+    padding: 16px;
+  }
+
+  .profile-header {
+    padding: 20px;
+  }
+
+  .profile-header h1 {
+    font-size: 20px;
+  }
+
+  .profile-section h2 {
+    font-size: 18px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .button-group button {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }

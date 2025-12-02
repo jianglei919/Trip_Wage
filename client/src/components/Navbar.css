@@ -18,6 +18,7 @@
   align-items: center;
   flex-wrap: nowrap;
   gap: 1rem;
+  position: relative;
 }
 
 .navbar-brand {
@@ -31,6 +32,7 @@
   transition: transform 0.3s ease;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  z-index: 1001;
 }
 
 .navbar-brand:hover {
@@ -40,6 +42,39 @@
 .navbar-brand::before {
   content: "🚗";
   font-size: 1.8rem;
+}
+
+/* 汉堡包菜单按钮 */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+  transition: transform 0.3s ease;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 .navbar-links {
@@ -127,39 +162,142 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 移动端遮罩层 */
+.mobile-overlay {
+  display: none;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .navbar-container {
+    padding: 0.8rem 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .navbar-brand::before {
+    font-size: 1.4rem;
+  }
+
+  /* 显示汉堡包菜单 */
+  .hamburger {
+    display: flex;
+  }
+
+  /* 移动端侧边栏菜单 */
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 280px;
+    max-width: 85vw;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 80px 0 20px;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    z-index: 1002; /* 确保在遮罩层之上 */
+  }
+
+  .navbar-links.mobile-active {
+    right: 0;
+  }
+
+  .navbar-links li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-links li a,
+  .navbar-links li button {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+    font-size: 1rem;
+  }
+
+  .navbar-links li a:hover,
+  .navbar-links li button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: none;
+  }
+
+  .navbar-user {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+  }
+
+  .navbar-user .user-welcome {
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-logout-btn {
+    border: none;
+    border-radius: 0;
+    padding: 1rem 1.5rem;
+    text-align: left;
+  }
+
+  .lang-switch-btn {
+    border: none;
+    border-radius: 0;
+  }
+
+  /* 移动端遮罩层 */
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
     padding: 0.6rem 0.8rem;
-    gap: 0.5rem;
   }
 
   .navbar-brand {
     font-size: 1rem;
-    white-space: nowrap;
-    gap: 0.3rem;
   }
-  
+
   .navbar-brand::before {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .navbar-links {
-    gap: 0.2rem;
-    flex-shrink: 0;
+    width: 260px;
   }
 
-  .navbar-links li a {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.8rem;
-  }
-  
-  .navbar-logout-btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-  }
-
-  .navbar-user span {
-    display: none;
+  .navbar-links li a,
+  .navbar-links li button {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.95rem;
   }
 }
