@@ -11,7 +11,13 @@ const DB_TYPE = process.env.DB_TYPE || 'firebase';
 const DUAL = String(process.env.DB_DUAL_WRITE || '').toLowerCase() === 'true';
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
