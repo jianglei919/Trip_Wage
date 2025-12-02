@@ -1,0 +1,123 @@
+{
+  "navbar": {
+    "tripWage": "配送工资",
+    "history": "历史记录",
+    "logout": "退出登录",
+    "login": "登录",
+    "register": "注册"
+  },
+  "tripWage": {
+    "title": "配送司机记账系统",
+    "today": "今天",
+    "previous": "上一天",
+    "next": "下一天",
+    "addOrder": "添加订单",
+    "exportExcel": "导出Excel",
+    "totalTips": "总小费",
+    "orders": "订单数",
+    "totalDistance": "总里程",
+    "hourlyRate": "时薪",
+    "totalIncome": "总收入",
+    "restaurantSettlement": "餐馆结账",
+    "cashOrders": "现金订单",
+    "tipsFromRestaurant": "餐馆支付小费",
+    "baseAndFuel": "底薪+油费",
+    "table": {
+      "date": "日期",
+      "orderNumber": "订单号",
+      "payment": "支付方式",
+      "orderValue": "订单金额",
+      "paymentAmt": "实收金额",
+      "change": "找零",
+      "extraTip": "额外现金小费",
+      "distance": "距离(公里)",
+      "longTrip": "长单",
+      "totalTips": "总小费",
+      "fuelFee": "油费补贴",
+      "totalIncome": "总收入",
+      "notes": "备注",
+      "action": "操作",
+      "delete": "删除",
+      "noOrders": "暂无订单数据。点击\"添加订单\"开始记录。",
+      "orderNumberPlaceholder": "订单号",
+      "longTripBadge": "✓ 长单",
+      "normalTripBadge": "-"
+    },
+    "paymentTypes": {
+      "online": "线上支付",
+      "card": "刷卡",
+      "cash": "现金",
+      "mixed": "混合支付"
+    }
+  },
+  "history": {
+    "title": "历史数据分析",
+    "query": "查询",
+    "last7Days": "最近7天",
+    "last14Days": "最近14天",
+    "last30Days": "最近30天",
+    "last90Days": "最近90天",
+    "chartView": "图表视图",
+    "tableView": "表格视图",
+    "exportExcel": "导出Excel",
+    "loading": "加载中...",
+    "cards": {
+      "workingDays": "工作天数",
+      "totalOrders": "总订单数",
+      "effectiveOrders": "有效订单数",
+      "totalDistance": "总里程",
+      "totalWorkHours": "总工时",
+      "basePay": "底薪",
+      "fuelSubsidy": "油费补贴",
+      "totalTips": "总小费",
+      "biweeklyPay": "底薪+油费（双周工资）",
+      "totalEarnings": "总收入"
+    },
+    "charts": {
+      "dailyWageBreakdown": "每日工资明细",
+      "totalIncomeComposition": "总收入构成",
+      "basePay": "底薪",
+      "tips": "小费",
+      "fuelSubsidy": "油费补贴"
+    },
+    "table": {
+      "date": "日期",
+      "orders": "订单数",
+      "effectiveOrders": "有效订单",
+      "distance": "里程(km)",
+      "workHours": "工时",
+      "basePay": "底薪",
+      "tips": "小费",
+      "fuelFee": "油费",
+      "totalWage": "总工资",
+      "hourlyRate": "时薪"
+    }
+  },
+  "common": {
+    "to": "至",
+    "hours": "小时",
+    "km": "公里",
+    "days": "天"
+  },
+  "login": {
+    "title": "登录",
+    "email": "邮箱",
+    "password": "密码",
+    "loginButton": "登录",
+    "noAccount": "还没有账号？",
+    "registerLink": "注册",
+    "loginFailed": "登录失败"
+  },
+  "register": {
+    "title": "注册",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "registerButton": "注册",
+    "haveAccount": "已有账号？",
+    "loginLink": "登录",
+    "passwordMismatch": "密码不匹配",
+    "registerFailed": "注册失败"
+  }
+}

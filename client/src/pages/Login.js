@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 const Login = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -27,18 +29,18 @@ const Login = () => {
       await login(formData);
       navigate('/tripwage');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.response?.data?.error || t('login.loginFailed'));
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h2>Login</h2>
+        <h2>{t('login.title')}</h2>
         {error && <div className="error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t('login.email')}</label>
             <input
               type="email"
               name="email"
@@ -48,7 +50,7 @@ const Login = () => {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>{t('login.password')}</label>
             <input
               type="password"
               name="password"
@@ -58,11 +60,11 @@ const Login = () => {
             />
           </div>
           <button type="submit" className="auth-submit-btn">
-            Login
+            {t('login.loginButton')}
           </button>
         </form>
         <div className="auth-link">
-          Don't have an account? <Link to="/register">Register</Link>
+          {t('login.noAccount')} <Link to="/register">{t('login.registerLink')}</Link>
         </div>
       </div>
     </div>

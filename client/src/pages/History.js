@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { orderService } from '../services/api';
+import { useTranslation } from 'react-i18next';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement,
   BarElement,
   Title,
   Tooltip,
   Legend,
   ArcElement
 } from 'chart.js';
-import { Line, Bar, Pie } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import * as XLSX from 'xlsx';
 import './History.css';
 
@@ -21,7 +21,6 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement,
   BarElement,
   Title,
   Tooltip,
@@ -30,6 +29,8 @@ ChartJS.register(
 );
 
 const History = () => {
+  const { t } = useTranslation();
+  
   // 获取本地日期（避免 UTC 时区问题）
   const getLocalDateString = () => {
     const date = new Date();
@@ -110,93 +111,24 @@ const History = () => {
   // 计算 Base + Fuel
   summary.basePlusFuel = summary.totalBasePayment + summary.totalFuel;
 
-  // 准备图表数据
-  const chartData = {
-    labels: stats.map(s => s.date.substring(5)), // MM-DD
-    datasets: [
-      {
-        label: 'Total Wage',
-        data: stats.map(s => s.totalWage.toFixed(2)),
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        yAxisID: 'y'
-      },
-      {
-        label: 'Tips',
-        data: stats.map(s => s.totalTips.toFixed(2)),
-        borderColor: 'rgb(255, 205, 86)',
-        backgroundColor: 'rgba(255, 205, 86, 0.5)',
-        yAxisID: 'y'
-      },
-      {
-        label: 'Orders',
-        data: stats.map(s => s.actualTrips),
-        borderColor: 'rgb(153, 102, 255)',
-        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-        yAxisID: 'y1'
-      }
-    ]
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: {
-      mode: 'index',
-      intersect: false
-    },
-    plugins: {
-      legend: {
-        position: 'top'
-      },
-      title: {
-        display: true,
-        text: 'Income Trend Analysis'
-      }
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-        title: {
-          display: true,
-          text: 'Amount ($)'
-        }
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        title: {
-          display: true,
-          text: 'Orders'
-        },
-        grid: {
-          drawOnChartArea: false
-        }
-      }
-    }
-  };
-
   // 柱状图 - 每日工资明细
   const barChartData = {
     labels: stats.map(s => s.date.substring(5)),
     datasets: [
       {
-        label: 'Base Pay',
+        label: t('history.charts.basePay'),
         data: stats.map(s => s.basePayment.toFixed(2)),
         backgroundColor: 'rgba(54, 162, 235, 0.8)'
       },
       {
-        label: 'Tips',
+        label: t('history.charts.tips'),
         data: stats.map(s => s.totalTips.toFixed(2)),
         backgroundColor: 'rgba(255, 205, 86, 0.8)'
       },
       {
-        label: 'Fuel Cost',
-        data: stats.map(s => (-s.fuelFeeTotal).toFixed(2)),
-        backgroundColor: 'rgba(255, 99, 132, 0.8)'
+        label: t('history.charts.fuelSubsidy'),
+        data: stats.map(s => Math.abs(s.fuelFeeTotal).toFixed(2)),
+        backgroundColor: 'rgba(76, 175, 80, 0.8)'
       }
     ]
   };
@@ -210,7 +142,7 @@ const History = () => {
       },
       title: {
         display: true,
-        text: 'Daily Wage Breakdown'
+        text: t('history.charts.dailyWageBreakdown')
       }
     },
     scales: {
@@ -229,23 +161,23 @@ const History = () => {
 
   // 饼图 - 收入构成
   const pieChartData = {
-    labels: ['Base Pay', 'Tips', 'Fuel Cost (Expense)'],
+    labels: [t('history.charts.basePay'), t('history.charts.tips'), t('history.charts.fuelSubsidy')],
     datasets: [
       {
         data: [
           summary.totalBasePayment.toFixed(2),
           summary.totalTips.toFixed(2),
-          summary.totalFuel.toFixed(2)
+          Math.abs(summary.totalFuel).toFixed(2)
         ],
         backgroundColor: [
           'rgba(54, 162, 235, 0.8)',
           'rgba(255, 205, 86, 0.8)',
-          'rgba(255, 99, 132, 0.8)'
+          'rgba(76, 175, 80, 0.8)'
         ],
         borderColor: [
           'rgba(54, 162, 235, 1)',
           'rgba(255, 205, 86, 1)',
-          'rgba(255, 99, 132, 1)'
+          'rgba(76, 175, 80, 1)'
         ],
         borderWidth: 1
       }
@@ -261,7 +193,7 @@ const History = () => {
       },
       title: {
         display: true,
-        text: 'Total Income Composition'
+        text: t('history.charts.totalIncomeComposition')
       }
     }
   };
@@ -312,9 +244,28 @@ const History = () => {
   return (
     <div className="history-container">
       <div className="history-header">
-        <h1>📊 Historical Data Analysis</h1>
+        <div className="header-top">
+          <h1>📊 {t('history.title')}</h1>
+          {stats.length > 0 && (
+            <div className="view-controls">
+              <button 
+                className={viewMode === 'chart' ? 'active' : ''}
+                onClick={() => setViewMode('chart')}
+              >
+                📈 {t('history.chartView')}
+              </button>
+              <button 
+                className={viewMode === 'table' ? 'active' : ''}
+                onClick={() => setViewMode('table')}
+              >
+                📋 {t('history.tableView')}
+              </button>
+              <button onClick={exportToExcel}>📥 {t('history.exportExcel')}</button>
+            </div>
+          )}
+        </div>
         
-        <div className="date-range-selector">
+        <div className="controls-main">
           <div className="date-inputs">
             <input
               type="date"
@@ -322,7 +273,7 @@ const History = () => {
               onChange={(e) => setStartDate(e.target.value)}
               placeholder="Start Date"
             />
-            <span>to</span>
+            <span>{t('common.to')}</span>
             <input
               type="date"
               value={endDate}
@@ -330,35 +281,17 @@ const History = () => {
               placeholder="End Date"
             />
             <button onClick={loadHistory} disabled={loading}>
-              {loading ? 'Loading...' : 'Query'}
+              {loading ? t('history.loading') : t('history.query')}
             </button>
           </div>
           
           <div className="quick-dates">
-            <button onClick={() => setQuickDate(7)}>Last 7 Days</button>
-            <button onClick={() => setQuickDate(14)}>Last 14 Days</button>
-            <button onClick={() => setQuickDate(30)}>Last 30 Days</button>
-            <button onClick={() => setQuickDate(90)}>Last 90 Days</button>
+            <button onClick={() => setQuickDate(7)}>{t('history.last7Days')}</button>
+            <button onClick={() => setQuickDate(14)}>{t('history.last14Days')}</button>
+            <button onClick={() => setQuickDate(30)}>{t('history.last30Days')}</button>
+            <button onClick={() => setQuickDate(90)}>{t('history.last90Days')}</button>
           </div>
         </div>
-
-        {stats.length > 0 && (
-          <div className="view-controls">
-            <button 
-              className={viewMode === 'chart' ? 'active' : ''}
-              onClick={() => setViewMode('chart')}
-            >
-              📈 Chart View
-            </button>
-            <button 
-              className={viewMode === 'table' ? 'active' : ''}
-              onClick={() => setViewMode('table')}
-            >
-              📋 Table View
-            </button>
-            <button onClick={exportToExcel}>📥 Export Excel</button>
-          </div>
-        )}
       </div>
 
       {stats.length > 0 && (
@@ -366,52 +299,53 @@ const History = () => {
           <div className="summary-cards">
             {/* Work Stats */}
             <div className="summary-card">
-              <div className="card-label">Working Days</div>
-              <div className="card-value">{summary.totalDays} days</div>
+              <div className="card-label">{t('history.cards.workingDays')}</div>
+              <div className="card-value">{summary.totalDays} {t('common.days')}</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">Total Orders</div>
+              <div className="card-label">{t('history.cards.totalOrders')}</div>
               <div className="card-value">{summary.totalTrips}+{summary.totalLongTrips} orders</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">Total Work Hours</div>
-              <div className="card-value">{summary.totalWorkHours.toFixed(1)} hours</div>
+              <div className="card-label">{t('history.cards.totalWorkHours')}</div>
+              <div className="card-value">{summary.totalWorkHours.toFixed(1)} {t('common.hours')}</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">Total Distance</div>
-              <div className="card-value">{summary.totalDistance.toFixed(1)} km</div>
+              <div className="card-label">{t('history.cards.totalDistance')}</div>
+              <div className="card-value">{summary.totalDistance.toFixed(1)} {t('common.km')}</div>
+            </div>
+            <div className="summary-card">
+              <div className="card-label">Avg {t('tripWage.hourlyRate')}</div>
+              <div className="card-value">
+                ${summary.totalWorkHours > 0 ? (summary.totalWage / summary.totalWorkHours).toFixed(2) : '0.00'}
+              </div>
             </div>
             
             {/* Income Components (Green) */}
             <div className="summary-card income-base">
-              <div className="card-label">Total Base Income</div>
+              <div className="card-label">{t('history.cards.basePay')}</div>
               <div className="card-value">${summary.totalBasePayment.toFixed(2)}</div>
             </div>
             <div className="summary-card income-fuel">
-              <div className="card-label">Total Fuel Subsidy</div>
+              <div className="card-label">{t('history.cards.fuelSubsidy')}</div>
               <div className="card-value">${Math.abs(summary.totalFuel).toFixed(2)}</div>
-            </div>
-            <div className="summary-card income-tips">
-              <div className="card-label">Total Tips</div>
-              <div className="card-value">${summary.totalTips.toFixed(2)}</div>
             </div>
             
             {/* Paycheck from Restaurant (Blue) */}
             <div className="summary-card paycheck">
-              <div className="card-label">Base + Fuel (Bi-weekly Pay)</div>
+              <div className="card-label">{t('history.cards.biweeklyPay')}</div>
               <div className="card-value">${(summary.totalBasePayment + Math.abs(summary.totalFuel)).toFixed(2)}</div>
+            </div>
+            
+            <div className="summary-card income-tips">
+              <div className="card-label">{t('history.cards.totalTips')}</div>
+              <div className="card-value">${summary.totalTips.toFixed(2)}</div>
             </div>
             
             {/* Total Earnings (Highlighted) */}
             <div className="summary-card highlight">
-              <div className="card-label">Total Wage</div>
+              <div className="card-label">{t('history.cards.totalEarnings')}</div>
               <div className="card-value">${summary.totalWage.toFixed(2)}</div>
-            </div>
-            <div className="summary-card">
-              <div className="card-label">Avg Hourly Rate</div>
-              <div className="card-value">
-                ${summary.totalWorkHours > 0 ? (summary.totalWage / summary.totalWorkHours).toFixed(2) : '0.00'}
-              </div>
             </div>
           </div>
 
@@ -433,17 +367,17 @@ const History = () => {
               <table className="history-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Actual Orders</th>
+                    <th>{t('history.table.date')}</th>
+                    <th>{t('history.table.orders')}</th>
                     <th>Long Trips</th>
-                    <th>Effective Orders</th>
-                    <th>Total Distance</th>
-                    <th>Tips</th>
-                    <th>Fuel Cost</th>
-                    <th>Work Hours</th>
-                    <th>Base Pay</th>
-                    <th>Total Wage</th>
-                    <th>Hourly Rate</th>
+                    <th>{t('history.table.effectiveOrders')}</th>
+                    <th>{t('history.table.distance')}</th>
+                    <th>{t('history.table.tips')}</th>
+                    <th>{t('history.table.fuelFee')}</th>
+                    <th>{t('history.table.workHours')}</th>
+                    <th>{t('history.table.basePay')}</th>
+                    <th>{t('history.table.totalWage')}</th>
+                    <th>{t('history.table.hourlyRate')}</th>
                   </tr>
                 </thead>
                 <tbody>

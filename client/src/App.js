@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import TripWage from './pages/TripWage';
 import History from './pages/History';
+import './i18n/config';
 import './App.css';
 
 function App() {

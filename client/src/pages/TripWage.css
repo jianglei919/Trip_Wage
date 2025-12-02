@@ -120,6 +120,21 @@
 .metric-distance { box-shadow: 0 0 0 1px rgba(108,117,125,.3); }
 .metric-hourly { box-shadow: 0 0 0 1px rgba(40,167,69,.35); }
 .metric-income { grid-column: span 2; }
+.metric-settlement-pay { 
+  box-shadow: 0 0 0 2px rgba(244,67,54,.5);
+  background: rgba(244,67,54,.15);
+}
+.metric-settlement-receive { 
+  box-shadow: 0 0 0 2px rgba(76,175,80,.5);
+  background: rgba(76,175,80,.15);
+}
+
+.metric-detail {
+  font-size: 9px;
+  opacity: 0.6;
+  margin-top: 4px;
+  line-height: 1.3;
+}
 
 @media (max-width: 600px) {
   .metric-income { grid-column: span 1; }
@@ -309,6 +324,18 @@ td {
   font-size: 13px;
 }
 
+/* Date column - prevent wrapping */
+td:first-child {
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+/* Action column - ensure button visibility */
+td:last-child {
+  min-width: 100px;
+  white-space: nowrap;
+}
+
 tr:hover {
   background: #f8f9fa;
   transition: background 0.2s ease;
@@ -334,6 +361,10 @@ textarea {
   font-size: 13px;
 }
 
+input[type="text"] {
+  white-space: nowrap;
+}
+
 select {
   cursor: pointer;
   background-color: white;
@@ -352,7 +383,17 @@ td {
 
 textarea {
   resize: vertical;
-  min-height: 40px;
+  min-height: 50px;
+  min-width: 200px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: inherit;
+}
+
+/* Notes column optimization */
+td:has(textarea) {
+  min-width: 220px;
+  width: auto;
 }
 
 .calculated {

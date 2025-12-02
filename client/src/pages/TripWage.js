@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { orderService } from '../services/api';
+import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import './TripWage.css';
 
@@ -10,6 +11,8 @@ const LONG_TRIP_THRESHOLD_KM = 10;
 const LONG_TRIP_EXTRA_FUEL = 3.5;
 
 const TripWage = () => {
+  const { t } = useTranslation();
+  
   // 获取本地日期（避免 UTC 时区问题）
   const getLocalDateString = () => {
     const date = new Date();
@@ -111,6 +114,8 @@ const TripWage = () => {
     let totalTips = 0;
     let fuelFeeTotal = 0;
     let effectiveTrips = 0;
+    let cashOrderValue = 0; // Cash支付的Order Value总和
+    let nonCashTips = 0; // Online/Card支付时餐馆需要支付给我的小费总和
 
     orders.forEach(order => {
       const calc = calculateOrder(order);
@@ -123,11 +128,27 @@ const TripWage = () => {
       } else {
         effectiveTrips += 1;
       }
+      
+      // 餐馆结账计算
+      if (order.paymentType === 'cash') {
+        // Cash支付：Order Value 是我需要支付给餐馆的
+        cashOrderValue += order.orderValue;
+      } else if (order.paymentType === 'online' || order.paymentType === 'card') {
+        // Online/Card支付：Payment Amt - Order Value 如果 > 0，是餐馆需要支付给我的
+        const tipFromRestaurant = order.paymentAmount - order.orderValue;
+        if (tipFromRestaurant > 0) {
+          nonCashTips += tipFromRestaurant;
+        }
+      }
     });
 
     const basePayment = workHours * BASE_HOURLY_RATE;
     const totalWage = basePayment + fuelFeeTotal + totalTips;
     const hourlyWage = workHours > 0 ? totalWage / workHours : 0;
+    
+    // 餐馆结账：我支付给餐馆的 - 餐馆支付给我的
+    // 正数表示我需要支付给餐馆，负数表示餐馆需要支付给我
+    const restaurantSettlement = cashOrderValue - nonCashTips;
 
     return {
       actualTrips: orders.length,
@@ -137,7 +158,10 @@ const TripWage = () => {
       fuelFeeTotal,
       totalTips,
       totalWage,
-      hourlyWage
+      hourlyWage,
+      cashOrderValue,
+      nonCashTips,
+      restaurantSettlement
     };
   };
 
@@ -336,30 +360,29 @@ const TripWage = () => {
   const summary = calculateDailySummary();
   const baseAndFuel = summary.basePayment + summary.fuelFeeTotal;
   const longTrips = summary.effectiveTrips - summary.actualTrips;
-  const tripsDisplay = longTrips > 0 ? `${summary.actualTrips} + ${longTrips}` : `${summary.actualTrips}`;
   // 关键指标卡片数据
   const keyMetrics = [
     {
-      label: 'Total Tips',
+      label: t('tripWage.totalTips'),
       value: `$${summary.totalTips.toFixed(2)}`,
       icon: '💵',
       className: 'metric-tips'
     },
     {
-      label: 'Orders',
+      label: t('tripWage.orders'),
       value: longTrips > 0 ? `${summary.actualTrips}+${longTrips}` : `${summary.actualTrips}`,
       icon: '📦',
       className: 'metric-trips'
     },
     {
-      label: 'Total Distance',
-      value: `${summary.totalDistance.toFixed(1)} km`,
+      label: t('tripWage.totalDistance'),
+      value: `${summary.totalDistance.toFixed(1)} ${t('common.km')}`,
       icon: '🚗',
       className: 'metric-distance'
     },
     {
-      label: 'Hourly Rate',
-      value: `$${summary.hourlyWage.toFixed(2)}/h`,
+      label: t('tripWage.hourlyRate'),
+      value: `$${summary.hourlyWage.toFixed(2)}/${t('common.hours')}`,
       icon: '⏱️',
       className: 'metric-hourly'
     }
@@ -368,7 +391,7 @@ const TripWage = () => {
   return (
     <div className="tripwage-container">
       <div className="tripwage-header">
-        <h1>🚗 Delivery Driver Accounting</h1>
+        <h1>🚗 {t('tripWage.title')}</h1>
 
         <div className="top-bar">
           <div className="date-time-group">
@@ -379,9 +402,9 @@ const TripWage = () => {
                 value={currentDate}
                 onChange={(e) => setCurrentDate(e.target.value)}
               />
-              <button onClick={setToday}>Today</button>
-              <button onClick={prevDay}>Previous</button>
-              <button onClick={nextDay}>Next</button>
+              <button onClick={setToday}>{t('tripWage.today')}</button>
+              <button onClick={prevDay}>{t('tripWage.previous')}</button>
+              <button onClick={nextDay}>{t('tripWage.next')}</button>
             </div>
             <div className="work-hours-input compact">
               <input 
@@ -405,7 +428,7 @@ const TripWage = () => {
                 }}
                 placeholder="结束"
               />
-              <div className="hours-display">{workHours.toFixed(1)}h</div>
+              <div className="hours-display">{workHours.toFixed(1)}{t('common.hours')}</div>
             </div>
           </div>
           <div className="metrics-cards">
@@ -421,9 +444,21 @@ const TripWage = () => {
             <div className="metric-card metric-income">
               <div className="metric-icon">💰</div>
               <div className="metric-info">
-                <div className="metric-label">Total Income</div>
+                <div className="metric-label">{t('tripWage.totalIncome')}</div>
                 <div className="metric-value">${summary.totalWage.toFixed(2)}</div>
-                <div className="metric-sub">Base+Fuel ${baseAndFuel.toFixed(2)} + Tips ${summary.totalTips.toFixed(2)}</div>
+                <div className="metric-sub">{t('tripWage.baseAndFuel')} ${baseAndFuel.toFixed(2)} + {t('tripWage.totalTips')} ${summary.totalTips.toFixed(2)}</div>
+              </div>
+            </div>
+            <div className={`metric-card ${summary.restaurantSettlement >= 0 ? 'metric-settlement-pay' : 'metric-settlement-receive'}`}>
+              <div className="metric-icon">{summary.restaurantSettlement >= 0 ? '🏪💸' : '🏪💵'}</div>
+              <div className="metric-info">
+                <div className="metric-label">{t('tripWage.restaurantSettlement')}</div>
+                <div className="metric-value">
+                  ${summary.restaurantSettlement.toFixed(2)}
+                </div>
+                <div className="metric-detail">
+                  {t('tripWage.cashOrders')}: ${summary.cashOrderValue.toFixed(2)} - {t('tripWage.tipsFromRestaurant')}: ${summary.nonCashTips.toFixed(2)}
+                </div>
               </div>
             </div>
           </div>
@@ -431,35 +466,35 @@ const TripWage = () => {
       </div>
 
       <div className="controls">
-        <button onClick={addOrder}>➕ Add Order</button>
-        <button onClick={exportExcel}>📊 Export Excel</button>
+        <button onClick={addOrder}>➕ {t('tripWage.addOrder')}</button>
+        <button onClick={exportExcel}>📊 {t('tripWage.exportExcel')}</button>
       </div>
 
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Order #</th>
-              <th>Payment</th>
-              <th>Order Value</th>
-              <th>Payment Amt</th>
-              <th>Change</th>
-              <th>Extra Tip</th>
-              <th>Distance (km)</th>
-              <th>Long Trip</th>
-              <th>Total Tips</th>
-              <th>Fuel Fee</th>
-              <th>Total Income</th>
-              <th>Notes</th>
-              <th>Action</th>
+              <th>{t('tripWage.table.date')}</th>
+              <th>{t('tripWage.table.orderNumber')}</th>
+              <th>{t('tripWage.table.payment')}</th>
+              <th>{t('tripWage.table.orderValue')}</th>
+              <th>{t('tripWage.table.paymentAmt')}</th>
+              <th>{t('tripWage.table.change')}</th>
+              <th>{t('tripWage.table.extraTip')}</th>
+              <th>{t('tripWage.table.distance')}</th>
+              <th>{t('tripWage.table.longTrip')}</th>
+              <th>{t('tripWage.table.totalTips')}</th>
+              <th>{t('tripWage.table.fuelFee')}</th>
+              <th>{t('tripWage.table.totalIncome')}</th>
+              <th>{t('tripWage.table.notes')}</th>
+              <th>{t('tripWage.table.action')}</th>
             </tr>
           </thead>
           <tbody>
             {orders.length === 0 ? (
               <tr>
                 <td colSpan="13" className="empty-state">
-                  No orders yet. Click "Add Order" to start.
+                  {t('tripWage.table.noOrders')}
                 </td>
               </tr>
             ) : (
@@ -475,7 +510,7 @@ const TripWage = () => {
                         value={order.orderNumber}
                         onChange={(e) => updateOrder(order.id, 'orderNumber', e.target.value)}
                         onBlur={() => order.isTemp && saveTempOrder(order.id)}
-                        placeholder="Order#"
+                        placeholder={t('tripWage.table.orderNumberPlaceholder')}
                       />
                     </td>
                     <td>
@@ -483,10 +518,10 @@ const TripWage = () => {
                         value={order.paymentType}
                         onChange={(e) => updateOrder(order.id, 'paymentType', e.target.value)}
                       >
-                        <option value="online">Online</option>
-                        <option value="card">Card</option>
-                        <option value="cash">Cash</option>
-                        <option value="mixed">Mixed</option>
+                        <option value="online">{t('tripWage.paymentTypes.online')}</option>
+                        <option value="card">{t('tripWage.paymentTypes.card')}</option>
+                        <option value="cash">{t('tripWage.paymentTypes.cash')}</option>
+                        <option value="mixed">{t('tripWage.paymentTypes.mixed')}</option>
                       </select>
                     </td>
                     <td>
@@ -531,9 +566,9 @@ const TripWage = () => {
                     </td>
                     <td className="calculated">
                       {order.distanceKm >= LONG_TRIP_THRESHOLD_KM ? (
-                        <span className="long-trip-badge">✓ Long</span>
+                        <span className="long-trip-badge">{t('tripWage.table.longTripBadge')}</span>
                       ) : (
-                        <span className="normal-trip-badge">-</span>
+                        <span className="normal-trip-badge">{t('tripWage.table.normalTripBadge')}</span>
                       )}
                     </td>
                     <td className="calculated">${calc.tipsTotal.toFixed(2)}</td>
@@ -546,7 +581,7 @@ const TripWage = () => {
                       />
                     </td>
                     <td>
-                      <button className="delete-btn" onClick={() => deleteOrder(order.id)}>Delete</button>
+                      <button className="delete-btn" onClick={() => deleteOrder(order.id)}>{t('tripWage.table.delete')}</button>
                     </td>
                   </tr>
                 );

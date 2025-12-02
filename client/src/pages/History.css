@@ -7,54 +7,111 @@
 .history-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 30px;
+  padding: 24px 30px;
   border-radius: 16px;
   margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .history-header h1 {
-  margin: 0 0 24px 0;
+  margin: 0;
   font-size: 28px;
   font-weight: 700;
 }
 
-.date-range-selector {
+.controls-main {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Desktop: all in one row */
+@media (min-width: 1025px) {
+  .controls-main {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  
+  .quick-dates {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  
+  .view-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+}
+
+/* Tablet and Mobile: stack vertically */
+@media (max-width: 1024px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .controls-main {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  
+  .date-inputs {
+    width: 100%;
+  }
+  
+  .quick-dates {
+    width: 100%;
+  }
+  
+  .view-controls {
+    width: 100%;
+  }
 }
 
 .date-inputs {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .date-inputs input {
-  padding: 10px;
+  padding: 9px 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  min-width: 150px;
+  min-width: 140px;
 }
 
 .date-inputs span {
   font-size: 14px;
+  font-weight: 500;
 }
 
 .date-inputs button {
-  padding: 12px 28px;
+  padding: 9px 24px;
   background: rgba(255, 255, 255, 0.25);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }
 
 .date-inputs button:hover:not(:disabled) {
@@ -75,15 +132,16 @@
 }
 
 .quick-dates button {
-  padding: 10px 18px;
+  padding: 9px 16px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .quick-dates button:hover {
@@ -94,37 +152,53 @@
 
 .view-controls {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .view-controls button {
-  padding: 8px 16px;
+  padding: 9px 16px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   transition: all 0.3s;
+  white-space: nowrap;
 }
 
 .view-controls button:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .view-controls button.active {
   background: rgba(255, 255, 255, 0.4);
   border-color: rgba(255, 255, 255, 0.6);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   margin-bottom: 28px;
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 767px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 .summary-card {
@@ -236,9 +310,23 @@
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
+}
+
+/* Tablet: stack charts vertically */
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile: single column */
+@media (max-width: 767px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .chart-box {
@@ -248,14 +336,11 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  min-width: 0;
 }
 
 .chart-box:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.chart-box.pie-chart {
-  grid-column: span 1;
 }
 
 .history-table-container {
@@ -410,18 +495,5 @@
   .history-table td {
     padding: 8px 4px;
     font-size: 11px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .charts-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .chart-box.pie-chart {
-    grid-column: span 2;
-    max-width: 600px;
-    margin: 0 auto;
-    width: 100%;
   }
 }

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 const Register = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -26,7 +28,7 @@ const Register = () => {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('register.passwordMismatch'));
       return;
     }
 
@@ -38,18 +40,18 @@ const Register = () => {
       });
       navigate('/tripwage');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
+      setError(err.response?.data?.error || t('register.registerFailed'));
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h2>Register</h2>
+        <h2>{t('register.title')}</h2>
         {error && <div className="error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Username</label>
+            <label>{t('register.username')}</label>
             <input
               type="text"
               name="username"
@@ -59,7 +61,7 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t('register.email')}</label>
             <input
               type="email"
               name="email"
@@ -69,7 +71,7 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>{t('register.password')}</label>
             <input
               type="password"
               name="password"
@@ -79,7 +81,7 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label>Confirm Password</label>
+            <label>{t('register.confirmPassword')}</label>
             <input
               type="password"
               name="confirmPassword"
@@ -89,11 +91,11 @@ const Register = () => {
             />
           </div>
           <button type="submit" className="auth-submit-btn">
-            Register
+            {t('register.registerButton')}
           </button>
         </form>
         <div className="auth-link">
-          Already have an account? <Link to="/login">Login</Link>
+          {t('register.haveAccount')} <Link to="/login">{t('register.loginLink')}</Link>
         </div>
       </div>
     </div>

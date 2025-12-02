@@ -1,0 +1,123 @@
+{
+  "navbar": {
+    "tripWage": "Trip Wage",
+    "history": "History",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "tripWage": {
+    "title": "Delivery Driver Accounting",
+    "today": "Today",
+    "previous": "Previous",
+    "next": "Next",
+    "addOrder": "Add Order",
+    "exportExcel": "Export Excel",
+    "totalTips": "Total Tips",
+    "orders": "Orders",
+    "totalDistance": "Total Distance",
+    "hourlyRate": "Hourly Rate",
+    "totalIncome": "Total Income",
+    "restaurantSettlement": "Restaurant Settlement",
+    "cashOrders": "Cash Orders",
+    "tipsFromRestaurant": "Tips from Restaurant",
+    "baseAndFuel": "Base+Fuel",
+    "table": {
+      "date": "Date",
+      "orderNumber": "Order #",
+      "payment": "Payment",
+      "orderValue": "Order Value",
+      "paymentAmt": "Payment Amt",
+      "change": "Change",
+      "extraTip": "Extra Tip",
+      "distance": "Distance (km)",
+      "longTrip": "Long Trip",
+      "totalTips": "Total Tips",
+      "fuelFee": "Fuel Fee",
+      "totalIncome": "Total Income",
+      "notes": "Notes",
+      "action": "Action",
+      "delete": "Delete",
+      "noOrders": "No orders yet. Click \"Add Order\" to start.",
+      "orderNumberPlaceholder": "Order#",
+      "longTripBadge": "Long",
+      "normalTripBadge": "-"
+    },
+    "paymentTypes": {
+      "online": "Online",
+      "card": "Card",
+      "cash": "Cash",
+      "mixed": "Mixed"
+    }
+  },
+  "history": {
+    "title": "Historical Data Analysis",
+    "query": "Query",
+    "last7Days": "Last 7 Days",
+    "last14Days": "Last 14 Days",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "chartView": "Chart View",
+    "tableView": "Table View",
+    "exportExcel": "Export Excel",
+    "loading": "Loading...",
+    "cards": {
+      "workingDays": "Working Days",
+      "totalOrders": "Total Orders",
+      "effectiveOrders": "Effective Orders",
+      "totalDistance": "Total Distance",
+      "totalWorkHours": "Total Work Hours",
+      "basePay": "Base Pay",
+      "fuelSubsidy": "Fuel Subsidy",
+      "totalTips": "Total Tips",
+      "biweeklyPay": "Base + Fuel (Bi-weekly Pay)",
+      "totalEarnings": "Total Earnings"
+    },
+    "charts": {
+      "dailyWageBreakdown": "Daily Wage Breakdown",
+      "totalIncomeComposition": "Total Income Composition",
+      "basePay": "Base Pay",
+      "tips": "Tips",
+      "fuelSubsidy": "Fuel Subsidy"
+    },
+    "table": {
+      "date": "Date",
+      "orders": "Orders",
+      "effectiveOrders": "Effective Orders",
+      "distance": "Distance (km)",
+      "workHours": "Work Hours",
+      "basePay": "Base Pay",
+      "tips": "Tips",
+      "fuelFee": "Fuel Fee",
+      "totalWage": "Total Wage",
+      "hourlyRate": "Hourly Rate"
+    }
+  },
+  "common": {
+    "to": "to",
+    "hours": "h",
+    "km": "km",
+    "days": "days"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Register",
+    "loginFailed": "Login failed"
+  },
+  "register": {
+    "title": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "registerButton": "Register",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Login",
+    "passwordMismatch": "Passwords do not match",
+    "registerFailed": "Registration failed"
+  }
+}
