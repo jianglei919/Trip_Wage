@@ -20,11 +20,11 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start:dev": "env-cmd -f .env.development react-scripts start",
+    "start": "REACT_APP_ENV=production react-scripts start",
+    "dev": "REACT_APP_ENV=development react-scripts start",
     "build": "react-scripts build",
-    "build:dev": "env-cmd -f .env.development react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "build:dev": "REACT_APP_ENV=development react-scripts build",
+    "build:prod": "REACT_APP_ENV=production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
