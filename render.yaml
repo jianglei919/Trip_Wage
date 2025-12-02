@@ -39,7 +39,3 @@ services:
     envVars:
       - key: REACT_APP_API_URL
         value: https://trip-wage-api.onrender.com/api  # 更新为你的后端域名
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
