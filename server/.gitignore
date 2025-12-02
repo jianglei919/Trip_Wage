@@ -12,7 +12,5 @@ coverage/
 .env.local
 serviceAccountKey.json
 
-# Keep example files
+# Keep example files only
 !.env.example
-!.env.development
-!.env.production
