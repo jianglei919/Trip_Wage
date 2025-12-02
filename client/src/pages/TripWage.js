@@ -2,13 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { orderService } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
+import wageConfig from '../config/wage.config';
 import './TripWage.css';
-
-// 全局配置常量
-const BASE_HOURLY_RATE = 8.5;
-const FUEL_PER_ORDER = 3.5;
-const LONG_TRIP_THRESHOLD_KM = 10;
-const LONG_TRIP_EXTRA_FUEL = 3.5;
 
 const TripWage = () => {
   const { t } = useTranslation();
@@ -96,10 +91,10 @@ const TripWage = () => {
     // 总小费 = max(0, 实收 - 订单金额 - 找零 + 额外现金小费)
     const tipsTotal = Math.max(0, order.paymentAmount - order.orderValue - order.changeReturned + order.extraCashTip);
     
-    // 油费补贴：基础3.5，长单额外3.5
-    let fuelFee = FUEL_PER_ORDER;
-    if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
-      fuelFee += LONG_TRIP_EXTRA_FUEL;
+    // 油费补贴：基础值，长单额外补贴
+    let fuelFee = wageConfig.fuelPerOrder;
+    if (order.distanceKm >= wageConfig.longTripThresholdKm) {
+      fuelFee += wageConfig.longTripExtraFuel;
     }
     
     // 总收入 = 油费补贴 + 总小费
@@ -123,7 +118,7 @@ const TripWage = () => {
       totalTips += calc.tipsTotal;
       fuelFeeTotal += calc.fuelFee;
 
-      if (order.distanceKm >= LONG_TRIP_THRESHOLD_KM) {
+      if (order.distanceKm >= wageConfig.longTripThresholdKm) {
         effectiveTrips += 2; // 长单贡献2
       } else {
         effectiveTrips += 1;
@@ -142,7 +137,7 @@ const TripWage = () => {
       }
     });
 
-    const basePayment = workHours * BASE_HOURLY_RATE;
+    const basePayment = workHours * wageConfig.baseHourlyRate;
     const totalWage = basePayment + fuelFeeTotal + totalTips;
     const hourlyWage = workHours > 0 ? totalWage / workHours : 0;
     
@@ -330,7 +325,7 @@ const TripWage = () => {
         order.changeReturned,
         order.extraCashTip,
         order.distanceKm,
-        order.distanceKm >= LONG_TRIP_THRESHOLD_KM ? 'Yes' : 'No',
+        order.distanceKm >= wageConfig.longTripThresholdKm ? 'Yes' : 'No',
         calc.tipsTotal,
         calc.fuelFee,
         calc.totalIncome,
@@ -569,7 +564,7 @@ const TripWage = () => {
                       />
                     </td>
                     <td className="calculated">
-                      {order.distanceKm >= LONG_TRIP_THRESHOLD_KM ? (
+                      {order.distanceKm >= wageConfig.longTripThresholdKm ? (
                         <span className="long-trip-badge">{t('tripWage.table.longTripBadge')}</span>
                       ) : (
                         <span className="normal-trip-badge">{t('tripWage.table.normalTripBadge')}</span>
