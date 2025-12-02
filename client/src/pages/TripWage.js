@@ -432,15 +432,17 @@ const TripWage = () => {
             </div>
           </div>
           <div className="metrics-cards">
-            {keyMetrics.map(m => (
-              <div key={m.label} className={`metric-card ${m.className}`}>
-                <div className="metric-icon">{m.icon}</div>
-                <div className="metric-info">
-                  <div className="metric-label">{m.label}</div>
-                  <div className="metric-value">{m.value}</div>
+            <div className="metrics-four">
+              {keyMetrics.map(m => (
+                <div key={m.label} className={`metric-card ${m.className}`}>
+                  <div className="metric-icon">{m.icon}</div>
+                  <div className="metric-info">
+                    <div className="metric-label">{m.label}</div>
+                    <div className="metric-value">{m.value}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
             <div className="metrics-duo">
               <div className="metric-card metric-income">
                 <div className="metric-icon">💰</div>

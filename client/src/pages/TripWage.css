@@ -63,26 +63,23 @@
 }
 
 .metrics-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 四指标容器：桌面端网格布局，移动端 2 列 */
+.metrics-four {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
 }
 
-/* 双卡容器：桌面端不破坏原有网格，移动端两列显示 */
-@media (min-width: 481px) {
-  .metrics-duo { display: contents; }
-}
-@media (max-width: 480px) {
-  .metrics-duo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    align-items: stretch;
-  }
-
-  /* 覆盖桌面端的跨列规则，确保两张卡片并排宽度一致 */
-  .metrics-duo .metric-income { grid-column: auto; }
-  .metrics-duo .metric-card { height: 100%; box-sizing: border-box; }
+/* 双卡容器：桌面端网格布局 */
+.metrics-duo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
 }
 
 .metric-card {
@@ -183,8 +180,12 @@
     width: 100%;
   }
 
-  .metrics-cards {
+  .metrics-four {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .metrics-duo {
     gap: 8px;
   }
 
@@ -268,8 +269,13 @@
     width: 100%;
   }
 
-  .metrics-cards {
-    grid-template-columns: 1fr; /* 手机端单列显示 */
+  .metrics-four {
+    grid-template-columns: repeat(2, 1fr); /* 四指标手机端 2 列 */
+    gap: 6px;
+  }
+
+  .metrics-duo {
+    grid-template-columns: 1fr; /* 双卡手机端单列 */
     gap: 6px;
   }
 
