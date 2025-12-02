@@ -68,6 +68,23 @@
   gap: 12px;
 }
 
+/* 双卡容器：桌面端不破坏原有网格，移动端两列显示 */
+@media (min-width: 481px) {
+  .metrics-duo { display: contents; }
+}
+@media (max-width: 480px) {
+  .metrics-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    align-items: stretch;
+  }
+
+  /* 覆盖桌面端的跨列规则，确保两张卡片并排宽度一致 */
+  .metrics-duo .metric-income { grid-column: auto; }
+  .metrics-duo .metric-card { height: 100%; box-sizing: border-box; }
+}
+
 .metric-card {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);

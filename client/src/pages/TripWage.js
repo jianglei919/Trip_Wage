@@ -441,23 +441,25 @@ const TripWage = () => {
                 </div>
               </div>
             ))}
-            <div className="metric-card metric-income">
-              <div className="metric-icon">💰</div>
-              <div className="metric-info">
-                <div className="metric-label">{t('tripWage.totalIncome')}</div>
-                <div className="metric-value">${summary.totalWage.toFixed(2)}</div>
-                <div className="metric-sub">{t('tripWage.baseAndFuel')} ${baseAndFuel.toFixed(2)} + {t('tripWage.totalTips')} ${summary.totalTips.toFixed(2)}</div>
-              </div>
-            </div>
-            <div className={`metric-card ${summary.restaurantSettlement >= 0 ? 'metric-settlement-pay' : 'metric-settlement-receive'}`}>
-              <div className="metric-icon">{summary.restaurantSettlement >= 0 ? '🏪💸' : '🏪💵'}</div>
-              <div className="metric-info">
-                <div className="metric-label">{t('tripWage.restaurantSettlement')}</div>
-                <div className="metric-value">
-                  ${summary.restaurantSettlement.toFixed(2)}
+            <div className="metrics-duo">
+              <div className="metric-card metric-income">
+                <div className="metric-icon">💰</div>
+                <div className="metric-info">
+                  <div className="metric-label">{t('tripWage.totalIncome')}</div>
+                  <div className="metric-value">${summary.totalWage.toFixed(2)}</div>
+                  <div className="metric-sub">{t('tripWage.baseAndFuel')} ${baseAndFuel.toFixed(2)} + {t('tripWage.totalTips')} ${summary.totalTips.toFixed(2)}</div>
                 </div>
-                <div className="metric-detail">
-                  {t('tripWage.cashOrders')}: ${summary.cashOrderValue.toFixed(2)} - {t('tripWage.tipsFromRestaurant')}: ${summary.nonCashTips.toFixed(2)}
+              </div>
+              <div className={`metric-card ${summary.restaurantSettlement >= 0 ? 'metric-settlement-pay' : 'metric-settlement-receive'}`}>
+                <div className="metric-icon">{summary.restaurantSettlement >= 0 ? '🏪💸' : '🏪💵'}</div>
+                <div className="metric-info">
+                  <div className="metric-label">{t('tripWage.restaurantSettlement')}</div>
+                  <div className="metric-value">
+                    ${summary.restaurantSettlement.toFixed(2)}
+                  </div>
+                  <div className="metric-detail">
+                    {t('tripWage.cashOrders')}: ${summary.cashOrderValue.toFixed(2)} - {t('tripWage.tipsFromRestaurant')}: ${summary.nonCashTips.toFixed(2)}
+                  </div>
                 </div>
               </div>
             </div>
