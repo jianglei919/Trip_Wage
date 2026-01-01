@@ -23,6 +23,22 @@
     "cashOrders": "现金订单",
     "tipsFromRestaurant": "餐馆支付小费",
     "baseAndFuel": "底薪+油费",
+    "addOrderModal": {
+      "title": "添加订单",
+      "description": "填写订单信息并保存，支持移动端与电脑端。",
+      "save": "保存订单",
+      "saving": "保存中...",
+      "cancel": "取消",
+      "saveFailed": "保存订单失败"
+    },
+    "editOrderModal": {
+      "title": "修改订单",
+      "description": "点击表格行打开，修改后保存。",
+      "save": "保存修改",
+      "saving": "保存中...",
+      "cancel": "取消",
+      "saveFailed": "更新订单失败"
+    },
     "table": {
       "date": "日期",
       "orderNumber": "订单号",

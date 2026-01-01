@@ -23,6 +23,22 @@
     "cashOrders": "Cash Orders",
     "tipsFromRestaurant": "Tips from Restaurant",
     "baseAndFuel": "Base+Fuel",
+    "addOrderModal": {
+      "title": "Add Order",
+      "description": "Enter order details and save.",
+      "save": "Save Order",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "saveFailed": "Failed to save order"
+    },
+    "editOrderModal": {
+      "title": "Edit Order",
+      "description": "Update order fields and save changes.",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "saveFailed": "Failed to update order"
+    },
     "table": {
       "date": "Date",
       "orderNumber": "Order #",

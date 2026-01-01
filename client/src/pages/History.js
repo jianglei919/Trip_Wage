@@ -392,8 +392,8 @@ const History = () => {
                       <td className="fuel-cell">${day.fuelFeeTotal.toFixed(2)}</td>
                       <td>{day.workHours.toFixed(1)}</td>
                       <td>${day.basePayment.toFixed(2)}</td>
-                      <td className="wage-cell">¥{day.totalWage.toFixed(2)}</td>
-                      <td>¥{day.hourlyWage.toFixed(2)}</td>
+                      <td className="wage-cell">${day.totalWage.toFixed(2)}</td>
+                      <td>${day.hourlyWage.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -23,6 +23,41 @@ const TripWage = () => {
   const [endTime, setEndTime] = useState('');
   const [workHours, setWorkHours] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSavingNewOrder, setIsSavingNewOrder] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSavingEditOrder, setIsSavingEditOrder] = useState(false);
+  const buildEmptyOrder = useCallback(() => ({
+    date: currentDate,
+    orderNumber: '',
+    paymentType: 'online',
+    orderValue: 0,
+    paymentAmount: 0,
+    changeReturned: 0,
+    extraCashTip: 0,
+    distanceKm: 0,
+    notes: ''
+  }), [currentDate]);
+  const [newOrder, setNewOrder] = useState(buildEmptyOrder);
+  const [editingOrder, setEditingOrder] = useState(null);
+
+  useEffect(() => {
+    if (!isAddModalOpen) return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isAddModalOpen]);
+
+  useEffect(() => {
+    if (!isEditModalOpen) return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isEditModalOpen]);
   
   // 用于追踪正在保存的临时订单ID，防止重复保存
   const savingOrdersRef = useRef(new Set());
@@ -162,22 +197,83 @@ const TripWage = () => {
 
   // 添加新订单
   const addOrder = () => {
-    // 在前端临时添加一个订单，使用临时ID
-    const tempOrder = {
-      id: `temp_${Date.now()}`,
-      date: currentDate,
-      orderNumber: '',
-      paymentType: 'online',
-      orderValue: 0,
-      paymentAmount: 0,
-      changeReturned: 0,
-      extraCashTip: 0,
-      distanceKm: 0,
-      notes: '',
-      isTemp: true // 标记为临时订单
-    };
-    
-    setOrders([...orders, tempOrder]);
+    setNewOrder(buildEmptyOrder());
+    setIsAddModalOpen(true);
+  };
+
+  const handleNewOrderChange = (field, value) => {
+    setNewOrder(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleEditOrderChange = (field, value) => {
+    setEditingOrder(prev => ({ ...prev, [field]: value }));
+  };
+
+  const openEditOrder = (order) => {
+    setEditingOrder({ ...order });
+    setIsEditModalOpen(true);
+  };
+
+  const saveNewOrder = async () => {
+    setIsSavingNewOrder(true);
+    try {
+      const payload = {
+        ...newOrder,
+        date: newOrder.date || currentDate,
+        orderValue: Number(newOrder.orderValue) || 0,
+        paymentAmount: Number(newOrder.paymentAmount) || 0,
+        changeReturned: Number(newOrder.changeReturned) || 0,
+        extraCashTip: Number(newOrder.extraCashTip) || 0,
+        distanceKm: Number(newOrder.distanceKm) || 0
+      };
+
+      const response = await orderService.createOrder(payload);
+      setOrders(prev => [...prev, response.data]);
+      setIsAddModalOpen(false);
+      setNewOrder(buildEmptyOrder());
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      alert(t('tripWage.addOrderModal.saveFailed'));
+    } finally {
+      setIsSavingNewOrder(false);
+    }
+  };
+
+  const closeAddOrderModal = () => {
+    if (isSavingNewOrder) return;
+    setIsAddModalOpen(false);
+  };
+
+  const closeEditOrderModal = () => {
+    if (isSavingEditOrder) return;
+    setIsEditModalOpen(false);
+    setEditingOrder(null);
+  };
+
+  const saveEditOrder = async () => {
+    if (!editingOrder) return;
+    setIsSavingEditOrder(true);
+    try {
+      const payload = {
+        ...editingOrder,
+        date: editingOrder.date || currentDate,
+        orderValue: Number(editingOrder.orderValue) || 0,
+        paymentAmount: Number(editingOrder.paymentAmount) || 0,
+        changeReturned: Number(editingOrder.changeReturned) || 0,
+        extraCashTip: Number(editingOrder.extraCashTip) || 0,
+        distanceKm: Number(editingOrder.distanceKm) || 0
+      };
+
+      await orderService.updateOrder(editingOrder.id, payload);
+      setOrders(prev => prev.map(o => (o.id === editingOrder.id ? { ...o, ...payload } : o)));
+      setIsEditModalOpen(false);
+      setEditingOrder(null);
+    } catch (error) {
+      console.error('Failed to update order:', error);
+      alert(t('tripWage.editOrderModal.saveFailed'));
+    } finally {
+      setIsSavingEditOrder(false);
+    }
   };
 
   // 更新订单
@@ -484,111 +580,315 @@ const TripWage = () => {
               <th>{t('tripWage.table.longTrip')}</th>
               <th>{t('tripWage.table.totalTips')}</th>
               <th>{t('tripWage.table.fuelFee')}</th>
-              <th>{t('tripWage.table.totalIncome')}</th>
-              <th>{t('tripWage.table.notes')}</th>
-              <th>{t('tripWage.table.action')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length === 0 ? (
-              <tr>
-                <td colSpan="13" className="empty-state">
-                  {t('tripWage.table.noOrders')}
-                </td>
               </tr>
-            ) : (
-              orders.map(order => {
-                const calc = calculateOrder(order);
-
-                return (
-                  <tr key={order.id}>
-                    <td>{order.date}</td>
-                    <td>
-                      <input 
-                        type="text"
-                        value={order.orderNumber}
-                        onChange={(e) => updateOrder(order.id, 'orderNumber', e.target.value)}
-                        onBlur={() => order.isTemp && saveTempOrder(order.id)}
-                        placeholder={t('tripWage.table.orderNumberPlaceholder')}
-                      />
-                    </td>
-                    <td>
-                      <select 
-                        value={order.paymentType}
-                        onChange={(e) => updateOrder(order.id, 'paymentType', e.target.value)}
-                      >
-                        <option value="online">{t('tripWage.paymentTypes.online')}</option>
-                        <option value="card">{t('tripWage.paymentTypes.card')}</option>
-                        <option value="cash">{t('tripWage.paymentTypes.cash')}</option>
-                        <option value="mixed">{t('tripWage.paymentTypes.mixed')}</option>
-                      </select>
-                    </td>
-                    <td>
-                      <input 
-                        type="number"
-                        value={order.orderValue}
-                        onChange={(e) => updateOrder(order.id, 'orderValue', parseFloat(e.target.value) || 0)}
-                        min="0" step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="number"
-                        value={order.paymentAmount}
-                        onChange={(e) => updateOrder(order.id, 'paymentAmount', parseFloat(e.target.value) || 0)}
-                        min="0" step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="number"
-                        value={order.changeReturned}
-                        onChange={(e) => updateOrder(order.id, 'changeReturned', parseFloat(e.target.value) || 0)}
-                        min="0" step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="number"
-                        value={order.extraCashTip}
-                        onChange={(e) => updateOrder(order.id, 'extraCashTip', parseFloat(e.target.value) || 0)}
-                        min="0" step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="number"
-                        value={order.distanceKm}
-                        onChange={(e) => updateOrder(order.id, 'distanceKm', parseFloat(e.target.value) || 0)}
-                        min="0" step="0.1"
-                      />
-                    </td>
-                    <td className="calculated">
-                      {order.distanceKm >= wageConfig.longTripThresholdKm ? (
-                        <span className="long-trip-badge">{t('tripWage.table.longTripBadge')}</span>
-                      ) : (
-                        <span className="normal-trip-badge">{t('tripWage.table.normalTripBadge')}</span>
-                      )}
-                    </td>
-                    <td className="calculated">${calc.tipsTotal.toFixed(2)}</td>
-                    <td className="calculated">${calc.fuelFee.toFixed(2)}</td>
-                    <td className="calculated">${calc.totalIncome.toFixed(2)}</td>
-                    <td>
-                      <textarea
-                        value={order.notes}
-                        onChange={(e) => updateOrder(order.id, 'notes', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <button className="delete-btn" onClick={() => deleteOrder(order.id)}>{t('tripWage.table.delete')}</button>
+            </thead>
+            <tbody>
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="13" className="empty-state">
+                      {t('tripWage.table.noOrders')}
                     </td>
                   </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+                ) : (
+                  orders.map(order => {
+                    const calc = calculateOrder(order);
+
+                    return (
+                      <tr key={order.id} className="clickable-row" onClick={() => openEditOrder(order)}>
+                        <td>{order.date}</td>
+                        <td>{order.orderNumber || '-'}</td>
+                        <td>{t(`tripWage.paymentTypes.${order.paymentType}`)}</td>
+                        <td>${Number(order.orderValue).toFixed(2)}</td>
+                        <td>${Number(order.paymentAmount).toFixed(2)}</td>
+                        <td>${Number(order.changeReturned).toFixed(2)}</td>
+                        <td>${Number(order.extraCashTip).toFixed(2)}</td>
+                        <td>{Number(order.distanceKm).toFixed(1)}</td>
+                        <td className="calculated">
+                          {order.distanceKm >= wageConfig.longTripThresholdKm ? (
+                            <span className="long-trip-badge">{t('tripWage.table.longTripBadge')}</span>
+                          ) : (
+                            <span className="normal-trip-badge">{t('tripWage.table.normalTripBadge')}</span>
+                          )}
+                        </td>
+                        <td className="calculated">${calc.tipsTotal.toFixed(2)}</td>
+                        <td className="calculated">${calc.fuelFee.toFixed(2)}</td>
+                        <td className="calculated">${calc.totalIncome.toFixed(2)}</td>
+                        <td>{order.notes || '-'}</td>
+                        <td>
+                          <button className="delete-btn" onClick={(e) => { e.stopPropagation(); deleteOrder(order.id); }}>
+                            {t('tripWage.table.delete')}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+                </tbody>
+              </table>
+            </div>
+
+            {isEditModalOpen && editingOrder && (
+          <div className="order-modal-overlay" onClick={closeEditOrderModal}>
+            <div className="order-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="order-modal-header">
+                <div>
+                  <div className="order-modal-title">{t('tripWage.editOrderModal.title')}</div>
+                  <div className="order-modal-sub">{t('tripWage.editOrderModal.description')}</div>
+                </div>
+                <button
+                  type="button"
+                  className="order-modal-close"
+                  onClick={closeEditOrderModal}
+                  aria-label={t('tripWage.editOrderModal.cancel')}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="order-modal-grid">
+                <label>
+                  <span>{t('tripWage.table.date')}</span>
+                  <input
+                    type="date"
+                    value={editingOrder.date}
+                    onChange={(e) => handleEditOrderChange('date', e.target.value)}
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.orderNumber')}</span>
+                  <input
+                    type="text"
+                    value={editingOrder.orderNumber}
+                    onChange={(e) => handleEditOrderChange('orderNumber', e.target.value)}
+                    placeholder={t('tripWage.table.orderNumberPlaceholder')}
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.payment')}</span>
+                  <select
+                    value={editingOrder.paymentType}
+                    onChange={(e) => handleEditOrderChange('paymentType', e.target.value)}
+                  >
+                    <option value="online">{t('tripWage.paymentTypes.online')}</option>
+                    <option value="card">{t('tripWage.paymentTypes.card')}</option>
+                    <option value="cash">{t('tripWage.paymentTypes.cash')}</option>
+                    <option value="mixed">{t('tripWage.paymentTypes.mixed')}</option>
+                  </select>
+                </label>
+                <label>
+                  <span>{t('tripWage.table.orderValue')}</span>
+                  <input
+                    type="number"
+                    value={editingOrder.orderValue}
+                    min="0"
+                    step="0.01"
+                    onChange={(e) => handleEditOrderChange('orderValue', e.target.value)}
+                    inputMode="decimal"
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.paymentAmt')}</span>
+                  <input
+                    type="number"
+                    value={editingOrder.paymentAmount}
+                    min="0"
+                    step="0.01"
+                    onChange={(e) => handleEditOrderChange('paymentAmount', e.target.value)}
+                    inputMode="decimal"
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.change')}</span>
+                  <input
+                    type="number"
+                    value={editingOrder.changeReturned}
+                    min="0"
+                    step="0.01"
+                    onChange={(e) => handleEditOrderChange('changeReturned', e.target.value)}
+                    inputMode="decimal"
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.extraTip')}</span>
+                  <input
+                    type="number"
+                    value={editingOrder.extraCashTip}
+                    min="0"
+                    step="0.01"
+                    onChange={(e) => handleEditOrderChange('extraCashTip', e.target.value)}
+                    inputMode="decimal"
+                  />
+                </label>
+                <label>
+                  <span>{t('tripWage.table.distance')}</span>
+                  <input
+                    type="number"
+                    value={editingOrder.distanceKm}
+                    min="0"
+                    step="0.1"
+                    onChange={(e) => handleEditOrderChange('distanceKm', e.target.value)}
+                    inputMode="decimal"
+                  />
+                </label>
+                <label className="order-modal-notes">
+                  <span>{t('tripWage.table.notes')}</span>
+                  <textarea
+                    value={editingOrder.notes}
+                    onChange={(e) => handleEditOrderChange('notes', e.target.value)}
+                    rows="3"
+                  />
+                </label>
+              </div>
+
+              <div className="order-modal-actions">
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={closeEditOrderModal}
+                  disabled={isSavingEditOrder}
+                >
+                  {t('tripWage.editOrderModal.cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={saveEditOrder}
+                  disabled={isSavingEditOrder}
+                >
+                  {isSavingEditOrder ? t('tripWage.editOrderModal.saving') : t('tripWage.editOrderModal.save')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+      {isAddModalOpen && (
+        <div className="order-modal-overlay" onClick={closeAddOrderModal}>
+          <div className="order-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="order-modal-header">
+              <div>
+                <div className="order-modal-title">{t('tripWage.addOrderModal.title')}</div>
+                <div className="order-modal-sub">{t('tripWage.addOrderModal.description')}</div>
+              </div>
+              <button
+                type="button"
+                className="order-modal-close"
+                onClick={closeAddOrderModal}
+                aria-label={t('tripWage.addOrderModal.cancel')}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="order-modal-grid">
+              <label>
+                <span>{t('tripWage.table.date')}</span>
+                <input
+                  type="date"
+                  value={newOrder.date}
+                  onChange={(e) => handleNewOrderChange('date', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.orderNumber')}</span>
+                <input
+                  type="text"
+                  value={newOrder.orderNumber}
+                  onChange={(e) => handleNewOrderChange('orderNumber', e.target.value)}
+                  placeholder={t('tripWage.table.orderNumberPlaceholder')}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.payment')}</span>
+                <select
+                  value={newOrder.paymentType}
+                  onChange={(e) => handleNewOrderChange('paymentType', e.target.value)}
+                >
+                  <option value="online">{t('tripWage.paymentTypes.online')}</option>
+                  <option value="card">{t('tripWage.paymentTypes.card')}</option>
+                  <option value="cash">{t('tripWage.paymentTypes.cash')}</option>
+                  <option value="mixed">{t('tripWage.paymentTypes.mixed')}</option>
+                </select>
+              </label>
+              <label>
+                <span>{t('tripWage.table.orderValue')}</span>
+                <input
+                  type="number"
+                  value={newOrder.orderValue}
+                  min="0"
+                  step="0.01"
+                  onChange={(e) => handleNewOrderChange('orderValue', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.paymentAmt')}</span>
+                <input
+                  type="number"
+                  value={newOrder.paymentAmount}
+                  min="0"
+                  step="0.01"
+                  onChange={(e) => handleNewOrderChange('paymentAmount', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.change')}</span>
+                <input
+                  type="number"
+                  value={newOrder.changeReturned}
+                  min="0"
+                  step="0.01"
+                  onChange={(e) => handleNewOrderChange('changeReturned', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.extraTip')}</span>
+                <input
+                  type="number"
+                  value={newOrder.extraCashTip}
+                  min="0"
+                  step="0.01"
+                  onChange={(e) => handleNewOrderChange('extraCashTip', e.target.value)}
+                />
+              </label>
+              <label>
+                <span>{t('tripWage.table.distance')}</span>
+                <input
+                  type="number"
+                  value={newOrder.distanceKm}
+                  min="0"
+                  step="0.1"
+                  onChange={(e) => handleNewOrderChange('distanceKm', e.target.value)}
+                />
+              </label>
+              <label className="order-modal-notes">
+                <span>{t('tripWage.table.notes')}</span>
+                <textarea
+                  value={newOrder.notes}
+                  onChange={(e) => handleNewOrderChange('notes', e.target.value)}
+                  rows="3"
+                />
+              </label>
+            </div>
+
+            <div className="order-modal-actions">
+              <button
+                type="button"
+                className="ghost"
+                onClick={closeAddOrderModal}
+                disabled={isSavingNewOrder}
+              >
+                {t('tripWage.addOrderModal.cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={saveNewOrder}
+                disabled={isSavingNewOrder}
+              >
+                {isSavingNewOrder ? t('tripWage.addOrderModal.saving') : t('tripWage.addOrderModal.save')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading && <div className="loading-overlay">Loading...</div>}
     </div>
