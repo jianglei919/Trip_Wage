@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { orderService } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
@@ -59,9 +59,6 @@ const TripWage = () => {
     };
   }, [isEditModalOpen]);
   
-  // 用于追踪正在保存的临时订单ID，防止重复保存
-  const savingOrdersRef = useRef(new Set());
-
   // 加载指定日期的数据
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -275,96 +272,6 @@ const TripWage = () => {
       setIsSavingEditOrder(false);
     }
   };
-
-  // 更新订单
-  const updateOrder = async (id, field, value) => {
-    const orderIndex = orders.findIndex(o => o.id === id);
-    if (orderIndex === -1) return;
-
-    const order = orders[orderIndex];
-    const updatedOrders = [...orders];
-    updatedOrders[orderIndex] = { ...updatedOrders[orderIndex], [field]: value };
-    setOrders(updatedOrders);
-
-    // 如果是临时订单且订单号不为空，则保存到数据库
-    // 注意：只在订单号失焦时保存，避免每次输入都触发
-    if (order.isTemp && field === 'orderNumber' && value && value.trim() !== '') {
-      // 临时订单在失焦时才保存，这里只更新状态
-      updatedOrders[orderIndex].pendingSave = true;
-      setOrders([...updatedOrders]);
-    } else if (!order.isTemp) {
-      // 如果是已保存的订单，更新数据库
-      try {
-        await orderService.updateOrder(id, { [field]: value });
-      } catch (error) {
-        console.error('Failed to update order:', error);
-      }
-    }
-  };
-
-  // 保存临时订单到数据库
-  const saveTempOrder = useCallback(async (id) => {
-    console.log(`🔵 saveTempOrder called for order: ${id}`);
-    
-    const orderIndex = orders.findIndex(o => o.id === id);
-    if (orderIndex === -1) {
-      console.log(`❌ Order ${id} not found`);
-      return;
-    }
-
-    const order = orders[orderIndex];
-    
-    // 防止重复保存：
-    // 1. 检查是否是临时订单
-    // 2. 检查是否有订单号
-    // 3. 检查是否正在保存中（使用 ref 追踪）
-    if (!order.isTemp || !order.orderNumber || order.orderNumber.trim() === '') {
-      console.log(`⏭️ Skipping save - isTemp: ${order.isTemp}, orderNumber: ${order.orderNumber}`);
-      return;
-    }
-    
-    // 使用 ref 追踪，防止并发保存
-    if (savingOrdersRef.current.has(id)) {
-      console.log(`⚠️ Order ${id} is already being saved, skipping...`);
-      return;
-    }
-    
-    savingOrdersRef.current.add(id);
-    console.log(`✅ Started saving order ${id}, tracking set size: ${savingOrdersRef.current.size}`);
-
-    try {
-      const orderData = { ...order };
-      delete orderData.id;
-      delete orderData.isTemp;
-      delete orderData.pendingSave;
-      delete orderData.isSaving;
-      
-      console.log('📦 Creating order:', orderData);
-      const response = await orderService.createOrder(orderData);
-      console.log('✅ Order created successfully:', response.data);
-      
-      // 替换临时订单为真实订单
-      setOrders(prevOrders => {
-        const newOrders = [...prevOrders];
-        const idx = newOrders.findIndex(o => o.id === id);
-        if (idx !== -1) {
-          newOrders[idx] = response.data;
-        }
-        return newOrders;
-      });
-      
-      // 保存成功后从追踪中移除
-      savingOrdersRef.current.delete(id);
-      console.log(`🟢 Finished saving order ${id}, tracking set size: ${savingOrdersRef.current.size}`);
-    } catch (error) {
-      console.error('❌ Failed to create order:', error);
-      alert('Failed to save order');
-      
-      // 保存失败也要从追踪中移除，允许重试
-      savingOrdersRef.current.delete(id);
-      console.log(`🔴 Error recovery, removed ${id} from tracking, set size: ${savingOrdersRef.current.size}`);
-    }
-  }, [orders]);
 
   // 删除订单
   const deleteOrder = async (id) => {
@@ -580,12 +487,15 @@ const TripWage = () => {
               <th>{t('tripWage.table.longTrip')}</th>
               <th>{t('tripWage.table.totalTips')}</th>
               <th>{t('tripWage.table.fuelFee')}</th>
+              <th>{t('tripWage.table.totalIncome')}</th>
+              <th>{t('tripWage.table.notes')}</th>
+              <th>{t('tripWage.table.action')}</th>
               </tr>
             </thead>
             <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="13" className="empty-state">
+                    <td colSpan="14" className="empty-state">
                       {t('tripWage.table.noOrders')}
                     </td>
                   </tr>

@@ -237,8 +237,8 @@ export const getHistoricalStats = async (req, res) => {
         dailyStats[date].effectiveTrips += 1;
       }
       
-      // Calculate distance
-      dailyStats[date].totalDistance += order.distanceKm || 0;
+      // Calculate distance (match TripWage daily page: round trip counted)
+      dailyStats[date].totalDistance += (order.distanceKm || 0) * 2;
       
       // Calculate channel tip
       let channelTip = 0;

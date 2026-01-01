@@ -381,7 +381,9 @@ const History = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.map((day) => (
+                  {stats
+                    .filter(day => day.actualTrips > 0)
+                    .map((day) => (
                     <tr key={day.date} className={day.actualTrips === 0 ? 'no-work-day' : ''}>
                       <td>{day.date}</td>
                       <td>{day.actualTrips}{day.longTripsCount > 0 ? `+${day.longTripsCount}` : ''}</td>
