@@ -18,7 +18,7 @@ const orderSchema = new mongoose.Schema({
   paymentType: {
     type: String,
     default: 'online',
-    enum: ['online', 'cash']
+    enum: ['online', 'cash', 'card', 'mixed']
   },
   orderValue: {
     type: Number,
