@@ -14,7 +14,8 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 import * as XLSX from 'xlsx';
-import './History.css';
+import wageConfig from '../config/wage.config';
+import './Stats.css';
 
 // 注册 Chart.js 组件
 ChartJS.register(
@@ -28,7 +29,7 @@ ChartJS.register(
   ArcElement
 );
 
-const History = () => {
+const Stats = () => {
   const { t } = useTranslation();
   
   // 获取本地日期（避免 UTC 时区问题）
@@ -41,39 +42,79 @@ const History = () => {
   };
   
   const today = getLocalDateString();
-  const [startDate, setStartDate] = useState(today);
-  const [endDate, setEndDate] = useState(today);
+
+  // 计算包含今天的双周周期 (基于 wage.config 的锚点日期)
+  const getCurrentBiweeklyCycle = () => {
+    const parseLocal = (str) => {
+      const [y, m, d] = str.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    };
+    const format = (date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+    const cycleDays = wageConfig.biweeklySettlementDays;
+    const anchor = parseLocal(wageConfig.biweeklyAnchorDate);
+    const now = parseLocal(today);
+    const diffDays = Math.floor((now - anchor) / (1000 * 60 * 60 * 24));
+    const cycleIndex = Math.floor(diffDays / cycleDays);
+    const start = new Date(anchor);
+    start.setDate(anchor.getDate() + cycleIndex * cycleDays);
+    const end = new Date(start);
+    end.setDate(start.getDate() + cycleDays - 1);
+    return { start: format(start), end: format(end) };
+  };
+
+  const defaultCycle = getCurrentBiweeklyCycle();
+  const [startDate, setStartDate] = useState(defaultCycle.start);
+  const [endDate, setEndDate] = useState(defaultCycle.end);
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState('chart'); // 'chart' or 'table'
 
-  // 快捷日期选择
-  const setQuickDate = (days) => {
-    const end = new Date();
-    const start = new Date();
-    start.setDate(start.getDate() - days);
-    
-    const formatDate = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+  // 切换周期 (offsetCycles: -1 上一周期 / +1 下一周期 / 0 当前周期)
+  const shiftCycle = (offsetCycles) => {
+    const parseLocal = (str) => {
+      const [y, m, d] = str.split('-').map(Number);
+      return new Date(y, m - 1, d);
     };
-    
-    setEndDate(formatDate(end));
-    setStartDate(formatDate(start));
+    const format = (date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+    const cycleDays = wageConfig.biweeklySettlementDays;
+    let newStart;
+    if (offsetCycles === 0) {
+      newStart = parseLocal(getCurrentBiweeklyCycle().start);
+    } else {
+      newStart = parseLocal(startDate);
+      newStart.setDate(newStart.getDate() + offsetCycles * cycleDays);
+    }
+    const newEnd = new Date(newStart);
+    newEnd.setDate(newStart.getDate() + cycleDays - 1);
+    const sStr = format(newStart);
+    const eStr = format(newEnd);
+    setStartDate(sStr);
+    setEndDate(eStr);
+    loadStats(sStr, eStr);
   };
 
-  // 加载历史数据
-  const loadHistory = async () => {
-    if (!startDate || !endDate) {
+  // 加载历史数据 (可选传入 start/end 覆盖当前 state)
+  const loadStats = async (sOverride, eOverride) => {
+    const s = sOverride || startDate;
+    const e = eOverride || endDate;
+    if (!s || !e) {
       alert('Please select start and end dates');
       return;
     }
 
     setLoading(true);
     try {
-      const response = await orderService.getHistoricalStats(startDate, endDate);
+      const response = await orderService.getHistoricalStats(s, e);
       setStats(response.data);
     } catch (error) {
       console.error('加载历史数据失败:', error);
@@ -116,17 +157,17 @@ const History = () => {
     labels: stats.map(s => s.date.substring(5)),
     datasets: [
       {
-        label: t('history.charts.basePay'),
+        label: t('stats.charts.basePay'),
         data: stats.map(s => s.basePayment.toFixed(2)),
         backgroundColor: 'rgba(54, 162, 235, 0.8)'
       },
       {
-        label: t('history.charts.tips'),
+        label: t('stats.charts.tips'),
         data: stats.map(s => s.totalTips.toFixed(2)),
         backgroundColor: 'rgba(255, 205, 86, 0.8)'
       },
       {
-        label: t('history.charts.fuelSubsidy'),
+        label: t('stats.charts.fuelSubsidy'),
         data: stats.map(s => Math.abs(s.fuelFeeTotal).toFixed(2)),
         backgroundColor: 'rgba(76, 175, 80, 0.8)'
       }
@@ -142,7 +183,7 @@ const History = () => {
       },
       title: {
         display: true,
-        text: t('history.charts.dailyWageBreakdown')
+        text: t('stats.charts.dailyWageBreakdown')
       }
     },
     scales: {
@@ -159,16 +200,26 @@ const History = () => {
     }
   };
 
-  // 饼图 - 收入构成
+  // 饼图 - 收入构成（label 带百分比）
+  const pieValues = [
+    summary.totalBasePayment,
+    summary.totalTips,
+    Math.abs(summary.totalFuel)
+  ];
+  const pieTotal = pieValues.reduce((s, v) => s + v, 0);
+  const pieLabel = (text, value) => {
+    const pct = pieTotal > 0 ? ((value / pieTotal) * 100).toFixed(1) : '0.0';
+    return `${text} ${pct}%`;
+  };
   const pieChartData = {
-    labels: [t('history.charts.basePay'), t('history.charts.tips'), t('history.charts.fuelSubsidy')],
+    labels: [
+      pieLabel(t('stats.charts.basePay'), pieValues[0]),
+      pieLabel(t('stats.charts.tips'), pieValues[1]),
+      pieLabel(t('stats.charts.fuelSubsidy'), pieValues[2])
+    ],
     datasets: [
       {
-        data: [
-          summary.totalBasePayment.toFixed(2),
-          summary.totalTips.toFixed(2),
-          Math.abs(summary.totalFuel).toFixed(2)
-        ],
+        data: pieValues.map(v => v.toFixed(2)),
         backgroundColor: [
           'rgba(54, 162, 235, 0.8)',
           'rgba(255, 205, 86, 0.8)',
@@ -187,13 +238,31 @@ const History = () => {
   const pieChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: { top: 8, bottom: 8 }
+    },
     plugins: {
       legend: {
-        position: 'top'
+        position: 'right',
+        align: 'center',
+        labels: {
+          boxWidth: 14,
+          padding: 10
+        }
       },
       title: {
         display: true,
-        text: t('history.charts.totalIncomeComposition')
+        text: t('stats.charts.totalIncomeComposition')
+      },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const value = Number(ctx.raw) || 0;
+            const total = ctx.dataset.data.reduce((sum, v) => sum + Number(v), 0);
+            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+            return `$${value.toFixed(2)} (${pct}%)`;
+          }
+        }
       }
     }
   };
@@ -237,34 +306,51 @@ const History = () => {
 
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Historical Stats');
+    XLSX.utils.book_append_sheet(wb, ws, 'Statistics');
     XLSX.writeFile(wb, `TripWage_${startDate}_${endDate}.xlsx`);
   };
 
+  // 计算当前选中的周期偏移量（-1/0/1 分别对应上一/当前/下一周期），用于高亮 cycle 按钮
+  const cycleOffset = (() => {
+    const parseLocal = (str) => {
+      const [y, m, d] = str.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    };
+    const currentStart = parseLocal(getCurrentBiweeklyCycle().start);
+    const selectedStart = parseLocal(startDate);
+    const cycleDays = wageConfig.biweeklySettlementDays;
+    const diffDays = Math.round((selectedStart - currentStart) / (1000 * 60 * 60 * 24));
+    if (diffDays % cycleDays !== 0) return null;
+    const offset = diffDays / cycleDays;
+    // endDate 必须正好是 startDate + (cycleDays - 1) 天才算对齐周期
+    const selectedEnd = parseLocal(endDate);
+    const expectedEnd = new Date(selectedStart);
+    expectedEnd.setDate(selectedStart.getDate() + cycleDays - 1);
+    if (selectedEnd.getTime() !== expectedEnd.getTime()) return null;
+    return offset;
+  })();
+
   return (
-    <div className="history-container">
-      <div className="history-header">
-        <div className="header-top">
-          <h1>📊 {t('history.title')}</h1>
-          {stats.length > 0 && (
-            <div className="view-controls">
-              <button 
-                className={viewMode === 'chart' ? 'active' : ''}
-                onClick={() => setViewMode('chart')}
-              >
-                📈 {t('history.chartView')}
-              </button>
-              <button 
-                className={viewMode === 'table' ? 'active' : ''}
-                onClick={() => setViewMode('table')}
-              >
-                📋 {t('history.tableView')}
-              </button>
-              <button onClick={exportToExcel}>📥 {t('history.exportExcel')}</button>
-            </div>
-          )}
-        </div>
-        
+    <div className="stats-container">
+      <div className="stats-header">
+        {stats.length > 0 && (
+          <div className="view-controls">
+            <button
+              className={viewMode === 'chart' ? 'active' : ''}
+              onClick={() => setViewMode('chart')}
+            >
+              📈 {t('stats.chartView')}
+            </button>
+            <button
+              className={viewMode === 'table' ? 'active' : ''}
+              onClick={() => setViewMode('table')}
+            >
+              📋 {t('stats.tableView')}
+            </button>
+            <button onClick={exportToExcel}>📥 {t('stats.exportExcel')}</button>
+          </div>
+        )}
+
         <div className="controls-main">
           <div className="date-inputs">
             <input
@@ -280,16 +366,30 @@ const History = () => {
               onChange={(e) => setEndDate(e.target.value)}
               placeholder="End Date"
             />
-            <button onClick={loadHistory} disabled={loading}>
-              {loading ? t('history.loading') : t('history.query')}
+            <button onClick={loadStats} disabled={loading}>
+              {loading ? t('stats.loading') : t('stats.query')}
             </button>
           </div>
           
           <div className="quick-dates">
-            <button onClick={() => setQuickDate(7)}>{t('history.last7Days')}</button>
-            <button onClick={() => setQuickDate(14)}>{t('history.last14Days')}</button>
-            <button onClick={() => setQuickDate(30)}>{t('history.last30Days')}</button>
-            <button onClick={() => setQuickDate(90)}>{t('history.last90Days')}</button>
+            <button
+              className={cycleOffset === -1 ? 'active' : ''}
+              onClick={() => shiftCycle(-1)}
+            >
+              ‹ {t('stats.prevCycle')}
+            </button>
+            <button
+              className={cycleOffset === 0 ? 'active' : ''}
+              onClick={() => shiftCycle(0)}
+            >
+              {t('stats.currentCycle')}
+            </button>
+            <button
+              className={cycleOffset === 1 ? 'active' : ''}
+              onClick={() => shiftCycle(1)}
+            >
+              {t('stats.nextCycle')} ›
+            </button>
           </div>
         </div>
       </div>
@@ -299,19 +399,19 @@ const History = () => {
           <div className="summary-cards">
             {/* Work Stats */}
             <div className="summary-card">
-              <div className="card-label">{t('history.cards.workingDays')}</div>
+              <div className="card-label">{t('stats.cards.workingDays')}</div>
               <div className="card-value">{summary.totalDays} {t('common.days')}</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">{t('history.cards.totalOrders')}</div>
+              <div className="card-label">{t('stats.cards.totalOrders')}</div>
               <div className="card-value">{summary.totalTrips}+{summary.totalLongTrips} orders</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">{t('history.cards.totalWorkHours')}</div>
+              <div className="card-label">{t('stats.cards.totalWorkHours')}</div>
               <div className="card-value">{summary.totalWorkHours.toFixed(1)} {t('common.hours')}</div>
             </div>
             <div className="summary-card">
-              <div className="card-label">{t('history.cards.totalDistance')}</div>
+              <div className="card-label">{t('stats.cards.totalDistance')}</div>
               <div className="card-value">{summary.totalDistance.toFixed(1)} {t('common.km')}</div>
             </div>
             <div className="summary-card">
@@ -323,28 +423,28 @@ const History = () => {
             
             {/* Income Components (Green) */}
             <div className="summary-card income-base">
-              <div className="card-label">{t('history.cards.basePay')}</div>
+              <div className="card-label">{t('stats.cards.basePay')}</div>
               <div className="card-value">${summary.totalBasePayment.toFixed(2)}</div>
             </div>
             <div className="summary-card income-fuel">
-              <div className="card-label">{t('history.cards.fuelSubsidy')}</div>
+              <div className="card-label">{t('stats.cards.fuelSubsidy')}</div>
               <div className="card-value">${Math.abs(summary.totalFuel).toFixed(2)}</div>
             </div>
             
             {/* Paycheck from Restaurant (Blue) */}
             <div className="summary-card paycheck">
-              <div className="card-label">{t('history.cards.biweeklyPay')}</div>
+              <div className="card-label">{t('stats.cards.biweeklyPay')}</div>
               <div className="card-value">${(summary.totalBasePayment + Math.abs(summary.totalFuel)).toFixed(2)}</div>
             </div>
             
             <div className="summary-card income-tips">
-              <div className="card-label">{t('history.cards.totalTips')}</div>
+              <div className="card-label">{t('stats.cards.totalTips')}</div>
               <div className="card-value">${summary.totalTips.toFixed(2)}</div>
             </div>
             
             {/* Total Earnings (Highlighted) */}
             <div className="summary-card highlight">
-              <div className="card-label">{t('history.cards.totalEarnings')}</div>
+              <div className="card-label">{t('stats.cards.totalEarnings')}</div>
               <div className="card-value">${summary.totalWage.toFixed(2)}</div>
             </div>
           </div>
@@ -363,21 +463,21 @@ const History = () => {
               </div>
             </div>
           ) : (
-            <div className="history-table-container">
-              <table className="history-table">
+            <div className="stats-table-container">
+              <table className="stats-table">
                 <thead>
                   <tr>
-                    <th>{t('history.table.date')}</th>
-                    <th>{t('history.table.orders')}</th>
+                    <th>{t('stats.table.date')}</th>
+                    <th>{t('stats.table.orders')}</th>
                     <th>Long Trips</th>
-                    <th>{t('history.table.effectiveOrders')}</th>
-                    <th>{t('history.table.distance')}</th>
-                    <th>{t('history.table.tips')}</th>
-                    <th>{t('history.table.fuelFee')}</th>
-                    <th>{t('history.table.workHours')}</th>
-                    <th>{t('history.table.basePay')}</th>
-                    <th>{t('history.table.totalWage')}</th>
-                    <th>{t('history.table.hourlyRate')}</th>
+                    <th>{t('stats.table.effectiveOrders')}</th>
+                    <th>{t('stats.table.distance')}</th>
+                    <th>{t('stats.table.tips')}</th>
+                    <th>{t('stats.table.fuelFee')}</th>
+                    <th>{t('stats.table.workHours')}</th>
+                    <th>{t('stats.table.basePay')}</th>
+                    <th>{t('stats.table.totalWage')}</th>
+                    <th>{t('stats.table.hourlyRate')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -414,4 +514,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default Stats;

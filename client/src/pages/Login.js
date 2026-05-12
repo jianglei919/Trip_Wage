@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       await login(formData);
-      navigate('/tripwage');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || t('login.loginFailed'));
     }

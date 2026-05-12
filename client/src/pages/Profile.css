@@ -1,27 +1,15 @@
 .profile-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 12px 20px;
 }
 
 .profile-card {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-}
-
-.profile-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 30px;
-  text-align: center;
-}
-
-.profile-header h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
 }
 
 .message {
@@ -44,7 +32,7 @@
 }
 
 .profile-content {
-  padding: 30px;
+  padding: 12px 20px 20px;
 }
 
 .profile-section h2 {
@@ -78,8 +66,8 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #475569;
+  box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.1);
 }
 
 .form-group input:disabled {
@@ -108,23 +96,23 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #F59E0B;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: #D97706;
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  background: #E0E7FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
 }
 
 .btn-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+  background: #C7D2FE;
+  border-color: #A5B4FC;
 }
 
 .btn-cancel {
@@ -137,24 +125,56 @@
   transform: translateY(-2px);
 }
 
+.profile-logout-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-logout {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.btn-logout:active {
+  transform: scale(0.99);
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
 }
 
-/* 响应式设计 */
+/* 响应式设计 - 移动端边到边紧凑 */
 @media (max-width: 768px) {
   .profile-container {
-    padding: 10px;
+    padding: 0 0 60px 0;
+  }
+
+  .profile-card {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    box-shadow: none;
   }
 
   .profile-content {
-    padding: 20px;
-  }
-
-  .profile-header h1 {
-    font-size: 22px;
+    padding: 12px;
   }
 
   .button-group {
@@ -168,20 +188,8 @@ button:disabled {
 }
 
 @media (max-width: 480px) {
-  .profile-container {
-    padding: 8px;
-  }
-
   .profile-content {
-    padding: 16px;
-  }
-
-  .profile-header {
-    padding: 20px;
-  }
-
-  .profile-header h1 {
-    font-size: 20px;
+    padding: 12px;
   }
 
   .profile-section h2 {

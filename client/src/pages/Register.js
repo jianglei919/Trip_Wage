@@ -38,7 +38,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password
       });
-      navigate('/tripwage');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || t('register.registerFailed'));
     }

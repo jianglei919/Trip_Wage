@@ -1,14 +1,15 @@
 {
   "navbar": {
     "tripWage": "Trip Wage",
-    "history": "History",
+    "dashboard": "Dashboard",
+    "stats": "Stats",
     "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
     "register": "Register"
   },
   "tripWage": {
-    "title": "Delivery Driver Accounting",
+    "title": "Dashboard",
     "today": "Today",
     "previous": "Previous",
     "next": "Next",
@@ -23,6 +24,11 @@
     "cashOrders": "Cash Orders",
     "tipsFromRestaurant": "Tips from Restaurant",
     "baseAndFuel": "Base+Fuel",
+    "details": "Details",
+    "workTime": "Work Time",
+    "youOweRestaurant": "You owe restaurant",
+    "restaurantOwesYou": "Restaurant owes you",
+    "selectDate": "Select Date",
     "addOrderModal": {
       "title": "Add Order",
       "description": "Enter order details and save.",
@@ -47,6 +53,7 @@
       "paymentAmt": "Payment Amt",
       "change": "Change",
       "extraTip": "Extra Tip",
+      "tip": "Tip",
       "distance": "Distance (km)",
       "longTrip": "Long Trip",
       "totalTips": "Total Tips",
@@ -67,13 +74,12 @@
       "mixed": "Mixed"
     }
   },
-  "history": {
-    "title": "Historical Data Analysis",
+  "stats": {
+    "title": "Statistics",
     "query": "Query",
-    "last7Days": "Last 7 Days",
-    "last14Days": "Last 14 Days",
-    "last30Days": "Last 30 Days",
-    "last90Days": "Last 90 Days",
+    "prevCycle": "Prev Cycle",
+    "currentCycle": "Current",
+    "nextCycle": "Next Cycle",
     "chartView": "Chart View",
     "tableView": "Table View",
     "exportExcel": "Export Excel",

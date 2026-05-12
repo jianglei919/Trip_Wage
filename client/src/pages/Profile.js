@@ -7,7 +7,7 @@ import './Profile.css';
 
 const Profile = () => {
   const { t } = useTranslation();
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const navigate = useNavigate();
   
   // 使用 localStorage 持久化编辑状态，抵抗组件重挂载
@@ -111,10 +111,6 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <div className="profile-card">
-        <div className="profile-header">
-          <h1>👤 {t('profile.title')}</h1>
-        </div>
-
         {message.text && (
           <div className={`message ${message.type}`}>
             {message.text}
@@ -123,8 +119,6 @@ const Profile = () => {
 
         <div className="profile-content">
           <div className="profile-section">
-            <h2>{t('profile.accountInfo')}</h2>
-            
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>{t('profile.username')}</label>
@@ -174,15 +168,15 @@ const Profile = () => {
             
             {!isEditing && (
               <div className="button-group">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn-primary"
                   onClick={handleEdit}
                 >
                   ✏️ {t('profile.editProfile')}
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn-secondary"
                   onClick={() => navigate('/change-password')}
                 >
@@ -191,6 +185,18 @@ const Profile = () => {
               </div>
             )}
           </div>
+
+          {!isEditing && (
+            <div className="profile-section profile-logout-section">
+              <button
+                type="button"
+                className="btn-logout"
+                onClick={logout}
+              >
+                ↪ {t('navbar.logout')}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

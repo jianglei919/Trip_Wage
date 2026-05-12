@@ -1,29 +1,20 @@
-.history-container {
+.stats-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 12px 20px;
 }
 
-.history-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 24px 30px;
+.stats-header {
+  background: #ffffff;
+  color: #0F172A;
+  padding: 8px 20px 16px;
   border-radius: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.header-top {
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.history-header h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .controls-main {
@@ -89,10 +80,12 @@
 
 .date-inputs input {
   padding: 9px 12px;
-  border: none;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   min-width: 140px;
+  color: #0F172A;
+  background: white;
 }
 
 .date-inputs span {
@@ -102,22 +95,19 @@
 
 .date-inputs button {
   padding: 9px 24px;
-  background: rgba(255, 255, 255, 0.25);
+  background: #F59E0B;
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease;
   white-space: nowrap;
 }
 
 .date-inputs button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #D97706;
 }
 
 .date-inputs button:disabled {
@@ -133,21 +123,26 @@
 
 .quick-dates button {
   padding: 9px 16px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: white;
+  color: #475569;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease;
   white-space: nowrap;
 }
 
 .quick-dates button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #F1F5F9;
+}
+
+.quick-dates button.active {
+  background: #FEF3C7;
+  border-color: #FCD34D;
+  color: #B45309;
+  font-weight: 700;
 }
 
 .view-controls {
@@ -158,25 +153,25 @@
 
 .view-controls button {
   padding: 9px 16px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: white;
+  color: #475569;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.3s;
+  transition: background 0.2s ease;
   white-space: nowrap;
 }
 
 .view-controls button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  background: #F1F5F9;
 }
 
 .view-controls button.active {
-  background: rgba(255, 255, 255, 0.4);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #FEF3C7;
+  border-color: #FCD34D;
+  color: #B45309;
   font-weight: 700;
 }
 
@@ -217,7 +212,7 @@
 }
 
 .summary-card.highlight {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   color: white;
 }
 
@@ -343,7 +338,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.history-table-container {
+.stats-table-container {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -352,13 +347,13 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.history-table {
+.stats-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 900px;
 }
 
-.history-table th {
+.stats-table th {
   background: #f8f9fa;
   padding: 12px 10px;
   text-align: center;
@@ -369,18 +364,18 @@
   white-space: nowrap;
 }
 
-.history-table td {
+.stats-table td {
   padding: 10px;
   border-bottom: 1px solid #e9ecef;
   font-size: 13px;
   text-align: center;
 }
 
-.history-table tr:hover {
+.stats-table tr:hover {
   background: #f8f9fa;
 }
 
-.history-table tr.no-work-day {
+.stats-table tr.no-work-day {
   opacity: 0.5;
   background: #fafafa;
 }
@@ -418,62 +413,85 @@
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .history-container {
-    padding: 12px;
-    margin: 12px auto;
+  .stats-container {
+    padding: 0 0 60px 0;
+    margin: 0;
   }
 
-  .history-header {
-    padding: 16px;
-  }
-
-  .history-header h1 {
-    font-size: 20px;
-    margin-bottom: 15px;
+  .stats-header {
+    padding: 6px 8px 8px;
+    margin-bottom: 4px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
   }
 
   .date-inputs {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
   }
 
   .date-inputs input {
-    min-width: 100%;
+    flex: 1;
+    min-width: 0;
     padding: 8px 10px;
   }
 
+  .date-inputs span {
+    flex-shrink: 0;
+  }
+
   .date-inputs button {
-    width: 100%;
-    padding: 8px 12px;
+    flex: 0 0 100%;
+    padding: 10px 12px;
   }
 
   .quick-dates {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 6px;
   }
 
   .quick-dates button {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 13px;
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 12px;
+    min-width: 0;
   }
 
   .view-controls {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 6px;
   }
 
   .view-controls button {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 13px;
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 12px;
+    min-width: 0;
   }
 
   .summary-cards {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 8px;
+    padding: 0 8px;
   }
 
   .summary-card {
     padding: 14px;
+    border-radius: 12px;
+  }
+
+  .charts-grid,
+  .stats-table-container {
+    margin: 8px 8px 0 8px;
+    border-radius: 12px;
+  }
+
+  .chart-box {
+    border-radius: 12px;
   }
 
   .card-label {
@@ -497,29 +515,20 @@
     padding: 15px;
   }
 
-  .history-table-container {
+  .stats-table-container {
     padding: 10px;
   }
 
-  .history-table th,
-  .history-table td {
+  .stats-table th,
+  .stats-table td {
     padding: 7px 4px;
     font-size: 11px;
   }
 }
 
 @media (max-width: 480px) {
-  .history-container {
-    padding: 8px;
-  }
-
-  .history-header {
-    padding: 12px;
-  }
-
-  .history-header h1 {
-    font-size: 18px;
-    margin-bottom: 12px;
+  .stats-header {
+    padding: 6px 8px 8px;
   }
 
   .date-inputs input {
@@ -567,18 +576,18 @@
     margin-bottom: 12px;
   }
 
-  .history-table-container {
+  .stats-table-container {
     padding: 8px;
     margin: 0 -8px;
   }
 
-  .history-table th,
-  .history-table td {
+  .stats-table th,
+  .stats-table td {
     padding: 6px 3px;
     font-size: 10px;
   }
 
-  .history-table {
+  .stats-table {
     min-width: 700px;
   }
 }

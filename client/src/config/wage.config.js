@@ -20,6 +20,10 @@ const wageConfig = {
   
   // 双周结算周期 (天数)
   biweeklySettlementDays: 14,
+
+  // 双周周期锚点日期 (任一已知周期的开始日)
+  // 例如 '2026-04-20' 表示 4/20–5/3 是一个周期，之后每 14 天向前/向后递推
+  biweeklyAnchorDate: '2026-04-20',
 };
 
 export default wageConfig;

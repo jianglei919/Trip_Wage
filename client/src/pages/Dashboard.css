@@ -1,26 +1,17 @@
 .tripwage-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 12px 20px;
 }
 
 .tripwage-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 25px;
+  background: #ffffff;
+  color: #0F172A;
+  padding: 8px 20px 16px;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-  margin-bottom: 24px;
-}
-
-.tripwage-header h1 {
-  font-size: 28px;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
-.tripwage-header h1::before {
-  content: "💰 ";
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 12px;
 }
 
 /* 新布局 */
@@ -55,11 +46,17 @@
 }
 
 .work-hours-input.compact .hours-display {
-  background: rgba(255,255,255,0.18);
+  background: #F1F5F9;
+  color: #0F172A;
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
+}
+
+.compact-input[type="date"],
+.compact-input[type="time"] {
+  border: 1px solid #e5e7eb !important;
 }
 
 .metrics-cards {
@@ -83,9 +80,9 @@
 }
 
 .metric-card {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.3);
+  background: #F8FAFC;
+  border: 1px solid #e5e7eb;
+  color: #0F172A;
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
@@ -93,14 +90,16 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-sizing: border-box; /* 确保 padding 和 border 计入总宽度 */
+  transition: background 0.2s ease;
+  box-sizing: border-box;
 }
 
 .metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  background: rgba(255,255,255,0.2);
+  background: #F1F5F9;
+}
+
+.metric-card .metric-label {
+  color: #64748B;
 }
 
 .metric-card .metric-icon {
@@ -130,18 +129,55 @@
   margin-top: 2px;
 }
 
-.metric-tips { box-shadow: 0 0 0 1px rgba(255,193,7,.3); }
-.metric-trips { box-shadow: 0 0 0 1px rgba(102,126,234,.4); }
-.metric-distance { box-shadow: 0 0 0 1px rgba(108,117,125,.3); }
-.metric-hourly { box-shadow: 0 0 0 1px rgba(40,167,69,.35); }
-.metric-settlement-pay { 
-  box-shadow: 0 0 0 2px rgba(244,67,54,.5);
-  background: rgba(244,67,54,.15);
+/* 主题色淡彩卡片 */
+.metric-tips {
+  background: #FEF3C7;
+  border-color: #FDE68A;
 }
-.metric-settlement-receive { 
-  box-shadow: 0 0 0 2px rgba(76,175,80,.5);
-  background: rgba(76,175,80,.15);
+.metric-tips .metric-value { color: #D97706; }
+.metric-tips:hover { background: #FDE68A; }
+
+.metric-trips {
+  background: #DBEAFE;
+  border-color: #BFDBFE;
 }
+.metric-trips .metric-value { color: #1E40AF; }
+.metric-trips:hover { background: #BFDBFE; }
+
+.metric-distance {
+  background: #E2E8F0;
+  border-color: #CBD5E1;
+}
+.metric-distance .metric-value { color: #475569; }
+.metric-distance:hover { background: #CBD5E1; }
+
+.metric-hourly {
+  background: #D1FAE5;
+  border-color: #A7F3D0;
+}
+.metric-hourly .metric-value { color: #047857; }
+.metric-hourly:hover { background: #A7F3D0; }
+
+.metric-income {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+}
+.metric-income .metric-value { color: #B45309; }
+.metric-income:hover { background: #FEF3C7; }
+
+.metric-settlement-pay {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+}
+.metric-settlement-pay .metric-value { color: #B91C1C; }
+.metric-settlement-pay:hover { background: #FECACA; }
+
+.metric-settlement-receive {
+  background: #D1FAE5;
+  border-color: #6EE7B7;
+}
+.metric-settlement-receive .metric-value { color: #047857; }
+.metric-settlement-receive:hover { background: #A7F3D0; }
 
 .metric-detail {
   font-size: 9px;
@@ -412,14 +448,15 @@
 }
 
 .date-selector button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #e5e7eb !important;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.2s ease;
 }
 
 .date-selector button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #e2e8f0;
 }
 
 .work-hours-input {
@@ -520,7 +557,7 @@
 }
 
 .controls button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #F59E0B;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -528,13 +565,12 @@
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: background 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .controls button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  background: #D97706;
 }
 
 .order-modal-overlay {
@@ -656,9 +692,13 @@
 }
 
 .order-modal-actions button:not(.ghost) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #F59E0B;
   color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.order-modal-actions button:not(.ghost):hover {
+  background: #D97706;
 }
 
 .order-modal-actions button:disabled {
@@ -782,9 +822,9 @@ td:has(textarea) {
 }
 
 .calculated {
-  background: #f0f8ff;
+  background: #F1F5F9;
   font-weight: 500;
-  color: #2c5aa0;
+  color: #475569;
 }
 
 .delete-btn {
@@ -822,6 +862,471 @@ td:has(textarea) {
   text-align: center;
   padding: 40px;
   color: #999;
+}
+
+/* 移动端专属组件，默认隐藏 */
+.tripwage-mobile-header,
+.tripwage-fab,
+.tripwage-settle-bar {
+  display: none;
+}
+
+/* 移动端订单卡片列表（默认隐藏，移动端启用） */
+.tripwage-cards {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tripwage-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tripwage-card:active {
+  transform: scale(0.99);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tripwage-card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.tripwage-card-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tripwage-card-order {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.payment-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.payment-online {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.payment-card {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.payment-cash {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.payment-mixed {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.tripwage-card-income {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tripwage-card-income-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.1;
+}
+
+.tripwage-card-income-label {
+  font-size: 10px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
+
+.tripwage-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+
+.tripwage-card-tips {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.tripwage-card-delete {
+  margin-left: auto;
+  background: transparent;
+  color: #dc2626;
+  border: none;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.tripwage-card-delete:active {
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    display: none;
+  }
+
+  .tripwage-cards {
+    display: flex;
+  }
+
+  /* 隐藏桌面端 header 和 controls */
+  .tripwage-header,
+  .controls {
+    display: none;
+  }
+
+  /* 移动端紧凑头部 - 白底极简风 */
+  .tripwage-mobile-header {
+    display: block;
+    background: #ffffff;
+    color: #0F172A;
+    border-radius: 14px;
+    padding: 16px 16px 18px;
+    margin-bottom: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .tripwage-mobile-titlebar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tripwage-mobile-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    color: #0F172A;
+  }
+
+  .tripwage-date-pill {
+    background: #F1F5F9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .tripwage-mobile-datepanel {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    background: #F8FAFC;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tripwage-mobile-datepanel input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #0F172A;
+  }
+
+  .tripwage-mobile-datebtns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .tripwage-mobile-datebtns button {
+    background: white;
+    color: #475569;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .tripwage-mobile-income {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+
+  .tripwage-mobile-income-top,
+  .tripwage-mobile-income-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tripwage-mobile-income-bottom {
+    align-items: flex-end;
+  }
+
+  .tripwage-mobile-income-label {
+    font-size: 11px;
+    color: #92400E;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .tripwage-mobile-income-value {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 2px;
+    color: #B45309;
+  }
+
+  .tripwage-mobile-income-toggle {
+    font-size: 12px;
+    color: #475569;
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  .tripwage-mobile-details {
+    margin-top: 12px;
+    background: #F8FAFC;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tripwage-mobile-details-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: #475569;
+  }
+
+  .tripwage-mobile-worktime {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tripwage-mobile-worktime input {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #0F172A;
+  }
+
+  .tripwage-mobile-hours {
+    background: white;
+    color: #0F172A;
+    border: 1px solid #e5e7eb;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .tripwage-mobile-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748B;
+  }
+
+  .tripwage-mobile-details-grid > div {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tripwage-mobile-details-grid > div.metric-tips { background: #FEF3C7; border-color: #FDE68A; }
+  .tripwage-mobile-details-grid > div.metric-trips { background: #DBEAFE; border-color: #BFDBFE; }
+  .tripwage-mobile-details-grid > div.metric-distance { background: #E2E8F0; border-color: #CBD5E1; }
+  .tripwage-mobile-details-grid > div.metric-hourly { background: #D1FAE5; border-color: #A7F3D0; }
+
+  .tripwage-mobile-details-grid b {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .tripwage-mobile-details-grid > div.metric-tips b { color: #D97706; }
+  .tripwage-mobile-details-grid > div.metric-trips b { color: #1E40AF; }
+  .tripwage-mobile-details-grid > div.metric-distance b { color: #475569; }
+  .tripwage-mobile-details-grid > div.metric-hourly b { color: #047857; }
+
+  .tripwage-mobile-export {
+    background: white;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 给底部留出空间不被对账栏 + tab bar 盖住 */
+  .tripwage-container {
+    padding-bottom: 200px;
+  }
+
+  /* 右下 FAB */
+  .tripwage-fab {
+    display: flex !important;
+    position: fixed !important;
+    right: 16px;
+    bottom: 180px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: white;
+    font-size: 26px;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5), 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .tripwage-fab:active {
+    transform: scale(0.95);
+  }
+
+  /* 底部固定对账卡（在 tab bar 之上） */
+  .tripwage-settle-bar {
+    display: block !important;
+    position: fixed !important;
+    left: 8px;
+    right: 8px;
+    bottom: 68px;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 9998;
+    color: white;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .tripwage-settle-bar.owe {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.82) 0%, rgba(225, 29, 72, 0.82) 100%);
+  }
+
+  .tripwage-settle-bar.receive {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.82) 0%, rgba(5, 150, 105, 0.82) 100%);
+  }
+
+  .tripwage-settle-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .tripwage-settle-label {
+    font-size: 12px;
+    opacity: 0.9;
+    letter-spacing: 0.4px;
+  }
+
+  .tripwage-settle-value {
+    font-size: 22px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tripwage-settle-caret {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+
+  .tripwage-settle-details {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .tripwage-settle-details > div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tripwage-settle-details b {
+    font-weight: 700;
+  }
 }
 
 .loading-overlay {
@@ -880,11 +1385,11 @@ td:has(textarea) {
 
 @media (min-width: 1025px) {
   .tripwage-container {
-    margin: 20px auto;
+    margin: 0 auto;
   }
 
   .tripwage-header {
-    padding: 20px;
+    padding: 8px 20px 16px;
   }
 
   .tripwage-summary {
@@ -898,4 +1403,39 @@ td:has(textarea) {
   .table-container {
     padding: 20px;
   }
+}
+
+/* 移动端紧凑模式：外层大容器边到边、零圆角、4px gap；内部小组件保留原圆角 */
+@media (max-width: 768px) {
+  .tripwage-container {
+    padding: 0 0 200px 0 !important;
+  }
+
+  .tripwage-mobile-header {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    margin-bottom: 4px !important;
+    padding: 8px 8px !important;
+  }
+
+  .tripwage-cards {
+    gap: 4px !important;
+  }
+
+  .tripwage-card {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .tripwage-settle-bar {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(50px + 2px + env(safe-area-inset-bottom, 0)) !important;
+    border-radius: 14px !important;
+  }
+
+  /* FAB 保持圆形（floating action button 约定） */
 }
