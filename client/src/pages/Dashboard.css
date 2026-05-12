@@ -410,8 +410,8 @@
     font-size: 18px;
   }
   .order-modal-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    column-gap: 14px;
+    row-gap: 12px;
   }
 
   .order-modal-notes {
@@ -632,8 +632,9 @@
 
 .order-modal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  column-gap: 16px;
+  row-gap: 14px;
   margin: 16px 0;
 }
 
