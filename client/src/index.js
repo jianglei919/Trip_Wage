@@ -9,3 +9,12 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+// 注册 Service Worker（仅生产环境）
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .catch((err) => console.error('SW 注册失败:', err));
+  });
+}
