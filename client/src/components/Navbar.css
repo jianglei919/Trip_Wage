@@ -1,8 +1,9 @@
 /* 现代化导航栏样式 */
 .navbar {
-  background: #ffffff;
+  background: #F1F5F9;
   padding: 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   position: sticky;
   top: 0;
   z-index: 1000;
