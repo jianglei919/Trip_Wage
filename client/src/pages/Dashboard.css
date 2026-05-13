@@ -459,6 +459,13 @@
   background: #e2e8f0;
 }
 
+.date-selector button.active {
+  background: #FEF3C7;
+  border-color: #FCD34D !important;
+  color: #B45309;
+  font-weight: 700;
+}
+
 .work-hours-input {
   display: flex;
   align-items: center;
@@ -632,7 +639,7 @@
 
 .order-modal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: 1fr 1fr;
   column-gap: 16px;
   row-gap: 14px;
   margin: 16px 0;
@@ -1088,6 +1095,13 @@ td:has(textarea) {
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+  }
+
+  .tripwage-mobile-datebtns button.active {
+    background: #FEF3C7;
+    border-color: #FCD34D;
+    color: #B45309;
+    font-weight: 700;
   }
 
   .tripwage-mobile-income {

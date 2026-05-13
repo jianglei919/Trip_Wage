@@ -359,17 +359,27 @@ const Dashboard = () => {
     XLSX.writeFile(wb, `tripwage-orders-${currentDate}.xlsx`);
   };
 
-  // 日期导航
-  const setToday = () => setCurrentDate(new Date().toISOString().split('T')[0]);
+  // 日期导航 (始终用本地时区，避免 UTC 偏移)
+  const formatLocalDate = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+  const parseLocalDate = (str) => {
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  };
+  const setToday = () => setCurrentDate(formatLocalDate(new Date()));
   const prevDay = () => {
-    const date = new Date(currentDate);
-    date.setDate(date.getDate() - 1);
-    setCurrentDate(date.toISOString().split('T')[0]);
+    const d = parseLocalDate(currentDate);
+    d.setDate(d.getDate() - 1);
+    setCurrentDate(formatLocalDate(d));
   };
   const nextDay = () => {
-    const date = new Date(currentDate);
-    date.setDate(date.getDate() + 1);
-    setCurrentDate(date.toISOString().split('T')[0]);
+    const d = parseLocalDate(currentDate);
+    d.setDate(d.getDate() + 1);
+    setCurrentDate(formatLocalDate(d));
   };
 
   const summary = calculateDailySummary();
@@ -416,7 +426,12 @@ const Dashboard = () => {
             />
             <div className="tripwage-mobile-datebtns">
               <button onClick={prevDay}>‹ {t('tripWage.previous')}</button>
-              <button onClick={setToday}>{t('tripWage.today')}</button>
+              <button
+                className={currentDate === getLocalDateString() ? 'active' : ''}
+                onClick={setToday}
+              >
+                {t('tripWage.today')}
+              </button>
               <button onClick={nextDay}>{t('tripWage.next')} ›</button>
             </div>
           </div>
@@ -485,8 +500,13 @@ const Dashboard = () => {
                 value={currentDate}
                 onChange={(e) => setCurrentDate(e.target.value)}
               />
-              <button onClick={setToday}>{t('tripWage.today')}</button>
               <button onClick={prevDay}>{t('tripWage.previous')}</button>
+              <button
+                className={currentDate === getLocalDateString() ? 'active' : ''}
+                onClick={setToday}
+              >
+                {t('tripWage.today')}
+              </button>
               <button onClick={nextDay}>{t('tripWage.next')}</button>
             </div>
             <div className="work-hours-input compact">
@@ -734,17 +754,30 @@ const Dashboard = () => {
                   />
                 </label>
                 {(editingOrder.paymentType === 'online' || editingOrder.paymentType === 'card') && (
-                  <label>
-                    <span>{t('tripWage.table.tip')}</span>
-                    <input
-                      type="number"
-                      value={editingOrder.tip}
-                      min="0"
-                      step="0.01"
-                      onChange={(e) => handleEditOrderChange('tip', e.target.value)}
-                      inputMode="decimal"
-                    />
-                  </label>
+                  <>
+                    <label>
+                      <span>{t('tripWage.table.tip')}</span>
+                      <input
+                        type="number"
+                        value={editingOrder.tip}
+                        min="0"
+                        step="0.01"
+                        onChange={(e) => handleEditOrderChange('tip', e.target.value)}
+                        inputMode="decimal"
+                      />
+                    </label>
+                    <label>
+                      <span>{t('tripWage.table.extraTip')}</span>
+                      <input
+                        type="number"
+                        value={editingOrder.extraCashTip}
+                        min="0"
+                        step="0.01"
+                        onChange={(e) => handleEditOrderChange('extraCashTip', e.target.value)}
+                        inputMode="decimal"
+                      />
+                    </label>
+                  </>
                 )}
                 {(editingOrder.paymentType === 'cash' || editingOrder.paymentType === 'mixed') && (
                   <>
@@ -884,17 +917,30 @@ const Dashboard = () => {
                 />
               </label>
               {(newOrder.paymentType === 'online' || newOrder.paymentType === 'card') && (
-                <label>
-                  <span>{t('tripWage.table.tip')}</span>
-                  <input
-                    type="number"
-                    value={newOrder.tip}
-                    min="0"
-                    step="0.01"
-                    onChange={(e) => handleNewOrderChange('tip', e.target.value)}
-                    inputMode="decimal"
-                  />
-                </label>
+                <>
+                  <label>
+                    <span>{t('tripWage.table.tip')}</span>
+                    <input
+                      type="number"
+                      value={newOrder.tip}
+                      min="0"
+                      step="0.01"
+                      onChange={(e) => handleNewOrderChange('tip', e.target.value)}
+                      inputMode="decimal"
+                    />
+                  </label>
+                  <label>
+                    <span>{t('tripWage.table.extraTip')}</span>
+                    <input
+                      type="number"
+                      value={newOrder.extraCashTip}
+                      min="0"
+                      step="0.01"
+                      onChange={(e) => handleNewOrderChange('extraCashTip', e.target.value)}
+                      inputMode="decimal"
+                    />
+                  </label>
+                </>
               )}
               {(newOrder.paymentType === 'cash' || newOrder.paymentType === 'mixed') && (
                 <>
